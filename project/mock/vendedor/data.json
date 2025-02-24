@@ -1,0 +1,38 @@
+[
+  {
+    "pessoa_id": "000000-0000-0000-000000",
+    "codigo": "100001",
+    "nome": "brendou",
+    "email": "brendou.dias@ideiatecnologia.com.br",
+    "empresa_id": "111111-1111-1111-111111",
+    "empresa_codigo": "E1",
+    "empresa_nome": "Minha Empresa",
+    "imagem": "https://media-gig4-2.cdn.whatsapp.net/v/t61.24694-24/417157758_3260911594201631_8900258635361650494_n.jpg?ccb=11-4&oh=01_Q5AaICamumcGVKukU2rI_EPdlFt2AOOmKOo0HOTFVjWJEJca&oe=67C99926&_nc_sid=5e03e0&_nc_cat=107",
+    "vendashoje": 10.0000,
+    "vendasontem": 20.0000,
+    "vendassemana": 30.0000,
+    "vendasmes": 40.0000,
+    "vendasmesanterior": 50.0000,
+    "clientes_inadimplentes": 10,
+    "clientes_adimplentes": 30,
+    "clientes_restantes": 20
+  },
+  {
+    "pessoa_id": "000000-0000-0000-000001",
+    "codigo": "100002",
+    "nome": "joao victor",
+    "email": "joao.borbella@ideiatecnologia.com.br",
+    "empresa_id": "111111-1111-1111-111111",
+    "empresa_codigo": "E1",
+    "empresa_nome": "Minha Empresa",
+    "imagem": "",
+    "vendashoje": 50.0000,
+    "vendasontem": 40.0000,
+    "vendassemana": 30.0000,
+    "vendasmes": 20.0000,
+    "vendasmesanterior": 10.0000,
+    "clientes_inadimplentes": 2,
+    "clientes_adimplentes": 38,
+    "clientes_restantes": 5
+  }
+]

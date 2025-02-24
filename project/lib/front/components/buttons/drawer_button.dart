@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project/back/seller_monitor/seller_monitor_data.dart';
 import 'package:project/front/components/buttons/modal_button.dart';
 import 'package:project/front/pages/customer_portifolio_page.dart';
 import 'package:project/front/pages/sale_monitor_page.dart';
@@ -20,7 +21,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   String image = '';
   String url = '';
   String urlBasic = '';
-  String email = '';
+  String usuario = '';
 
   String empresaid = '';
   String cpf = '';
@@ -29,16 +30,36 @@ class _CustomDrawerState extends State<CustomDrawer> {
   bool _isExpandedConfig = false;
   bool _isExpandedMonit = false;
 
+  late String pessoa_id = '';
+  late String codigo = '';
+  late String nome = '';
+  late String email = '';
+  late String empresa_id = '';
+  late String empresa_codigo = '';
+  late String empresa_nome = '';
+  late String imagem = '';
+  late double vendashoje = 0.0;
+  late double vendasontem = 0.0;
+  late double vendassemana = 0.0;
+  late double vendasmes = 0.0;
+  late double vendasmesanterior = 0.0;
+  late int clientes_inadimplentes = 0;
+  late int clientes_adimplentes = 0;
+  late int clientes_restantes = 0;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _loadSavedUrl();
-    _loadSavedToken();
-    _loadSavedLogin();
-    _loadSavedImage();
-    _loadSavedUrlBasic();
-    _loadSavedEmail();
-    _loadSavedFlagNotify();
+    // _loadSavedUrl();
+    // _loadSavedToken();
+    // _loadSavedLogin();
+    // _loadSavedImage();
+    // _loadSavedUrlBasic();
+    // _loadSavedEmail();
+    // _loadSavedFlagNotify();
+    // _loadSavedUser;
+    // fetchDataSellerMonitor();
+    loadData();
   }
 
   void _closeDrawer() {
@@ -96,25 +117,25 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                         height: Style.AccountNameWidth(context),
                                         // decoration: BoxDecoration(shape: BoxShape.circle),
                                         child: ClipOval(
-                                          child: image.isNotEmpty
-                                              ? Image.network(
-                                                  urlBasic + image,
-                                                  alignment:
-                                                      Alignment.topCenter,
-                                                  fit: BoxFit.cover,
-                                                  filterQuality:
-                                                      FilterQuality.high,
-                                                ) // Exibe a imagem
-                                              : Image.asset(
-                                                  'assets/images/user.png',
-                                                  color: Style.tertiaryColor,
-                                                  alignment:
-                                                      Alignment.topCenter,
-                                                  fit: BoxFit.cover,
-                                                  filterQuality:
-                                                      FilterQuality.high,
-                                                ),
-                                        ),
+                                            child: imagem.isEmpty
+                                                ? Image.asset(
+                                                    'assets/images/user.png',
+                                                    color: Style.tertiaryColor,
+                                                    alignment:
+                                                        Alignment.topCenter,
+                                                    fit: BoxFit.cover,
+                                                    filterQuality:
+                                                        FilterQuality.high,
+                                                  )
+                                                : Image.network(
+                                                    imagem,
+                                                    alignment:
+                                                        Alignment.topCenter,
+                                                    fit: BoxFit.cover,
+                                                    filterQuality:
+                                                        FilterQuality.high,
+                                                  ) // Exibe a imagem
+                                            ),
                                       ),
                                     ],
                                   ),
@@ -136,6 +157,19 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                               color: Style.tertiaryColor,
                                             ),
                                             textAlign: TextAlign.start,
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            '${empresa_codigo} - ${empresa_nome}',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins-Regular',
+                                              fontSize:
+                                                  Style.height_12(context),
+                                              color: Style.tertiaryColor,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -219,14 +253,44 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            '🖥️ Monitores',
-                                            style: TextStyle(
-                                              fontSize:
-                                                  Style.height_15(context),
-                                              fontWeight: FontWeight.bold,
-                                              color: Style.secondaryColor,
-                                            ),
+                                          SizedBox(
+                                            height: Style.height_10(context),
+                                          ),
+                                          Row(
+                                            children: [
+                                              if (_isExpandedMonit)
+                                                Transform.rotate(
+                                                  angle:
+                                                      3.1416, // 180 graus em radianos (π)
+                                                  child: Icon(
+                                                    Icons
+                                                        .arrow_drop_down_outlined,
+                                                    size: Style.height_20(
+                                                        context),
+                                                    color: Style.primaryColor,
+                                                  ),
+                                                )
+                                              else
+                                                Icon(
+                                                  Icons
+                                                      .arrow_drop_down_outlined,
+                                                  size:
+                                                      Style.height_20(context),
+                                                  color: Style.primaryColor,
+                                                ),
+                                              SizedBox(
+                                                width: Style.width_10(context),
+                                              ),
+                                              Text(
+                                                'Monitores',
+                                                style: TextStyle(
+                                                    fontSize: Style.height_15(
+                                                        context),
+                                                    color: Style.primaryColor,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ],
                                           ),
                                           AnimatedContainer(
                                             padding: EdgeInsets.only(
@@ -289,7 +353,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                                               MaterialPageRoute(
                                                                 builder:
                                                                     (context) =>
-                                                                        SaleMonitor(),
+                                                                        SaleMonitor(vendedorpessoa_id: pessoa_id,),
                                                               ),
                                                             );
                                                           },
@@ -489,5 +553,44 @@ class _CustomDrawerState extends State<CustomDrawer> {
     setState(() {
       email = savedEmail;
     });
+  }
+
+  Future<void> _loadSavedUser() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String savedUser = await sharedPreferences.getString('saveUser') ?? '';
+    setState(() {
+      usuario = savedUser;
+    });
+  }
+
+  Future<void> fetchDataSellerMonitor() async {
+    Map<String?, dynamic?> fetchedData =
+        await DataServiceSellerMonitor.fetchDataSellerMonitor(
+            usuario, urlBasic);
+    setState(() {
+      pessoa_id = fetchedData['pessoa_id'] ?? '';
+      codigo = fetchedData['codigo'] ?? '';
+      nome = fetchedData['nome'] ?? '';
+      email = fetchedData['email'] ?? '';
+      empresa_id = fetchedData['empresa_id'] ?? '';
+      empresa_codigo = fetchedData['empresa_codigo'] ?? '';
+      empresa_nome = fetchedData['empresa_nome'] ?? '';
+      imagem = fetchedData['imagem'] ?? '';
+      vendashoje = fetchedData['vendashoje'] ?? 0.0;
+      vendasontem = fetchedData['vendasontem'] ?? 0.0;
+      vendassemana = fetchedData['vendassemana'] ?? 0.0;
+      vendasmes = fetchedData['vendasmes'] ?? 0.0;
+      vendasmesanterior = fetchedData['vendasmesanterior'] ?? 0.0;
+      clientes_inadimplentes = fetchedData['clientes_inadimplentes'] ?? 0;
+      clientes_adimplentes = fetchedData['clientes_adimplentes'] ?? 0;
+      clientes_restantes = fetchedData['clientes_restantes'] ?? 0;
+    });
+  }
+
+  Future<void> loadData() async {
+    await Future.wait([_loadSavedUrlBasic()]);
+    await Future.wait([_loadSavedUser()]);
+    await Future.wait([_loadSavedLogin()]);
+    await Future.wait([fetchDataSellerMonitor()]);
   }
 }

@@ -1,0 +1,20 @@
+[
+  {
+    "pessoa_id": "000000-0000-0000-000000",
+    "codigo": "000001",
+    "nome": "Brendou",
+    "email": "brendou.dias@ideiatecnologia.com.br",
+    "empresa_id": "111111-1111-1111-111111",
+    "empresa_codigo": "E1",
+    "empresa_nome": "Minha Empresa",
+    "imagem": "",
+    "vendashoje": 0.0000,
+    "vendasontem": 0.0000,
+    "vendassemana": 0.0000,
+    "vendasmes": 0.0000,
+    "vendasmesanterior": 0.0000,
+    "clientes_inadimplentes": 10,
+    "clientes_adimplentes": 30,
+    "clientes_restantes": 20
+  }
+]

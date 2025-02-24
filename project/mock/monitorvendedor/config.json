@@ -1,0 +1,11 @@
+{
+    "module": "Monitor do Vendedor",
+    "public": true,
+    "key": "pessoa_id",
+    "required": [
+        "pessoa_id"
+    ],
+    "search": [
+        "pessoa_id"
+    ]
+}

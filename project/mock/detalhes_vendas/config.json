@@ -1,0 +1,13 @@
+{
+    "module": "Detalhes de vendas",
+    "public": true,
+    "key": "movimentosaida_id",
+    "required": [
+        "movimentosaida_id",
+        "numeromovimento"
+    ],
+    "search": [
+        "movimentosaida_id",
+        "numeromovimento"
+    ]
+}

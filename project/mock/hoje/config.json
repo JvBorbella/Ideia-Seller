@@ -1,0 +1,11 @@
+{
+    "module": "Vendas de Hoje",
+    "public": true,
+    "key": "vendedorpessoa_id",
+    "required": [
+        "vendedorpessoa_id"
+    ],
+    "search": [
+        "vendedorpessoa_id"
+    ]
+}

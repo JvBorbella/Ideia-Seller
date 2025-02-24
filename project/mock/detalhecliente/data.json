@@ -1,0 +1,16 @@
+[
+  {
+    "pessoa_id": "000000-0000-0000-000000",
+    "valortotalvenda": 0.0000,
+    "valortotaldevolucao": 0.0000,
+    "valorcredito": 0.0000,
+    "margem": 0.000,
+    "pessoa_codigo": "000001",
+    "pessoa_nome": "Cliente 01",
+    "quantidadetitulosvencidos": 2,
+    "valortituloavencer": 0.0000,
+    "valortitulovencido": 0.0000,
+    "dataultimopagamento": "0000-00-00",
+    "dataultimavenda": "0000-00-00"
+  }
+]

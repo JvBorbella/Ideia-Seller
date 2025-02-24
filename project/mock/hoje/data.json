@@ -1,0 +1,26 @@
+[
+  {
+    "vendedorpessoa_id": "000000-0000-0000-000000",
+    "vendabruta": 850.2000,
+    "vendaliquida": 720.2000,
+    "ticketmedio": 5.000,
+    "mediadiaria": 100.0200,
+    "margem": 12.000,
+    "valortotaldevolucao": 30.2000,
+    "valortotalcancelamento": 80.0000,
+    "valortotaldesconto": 20.0000,
+    "valortotal": 720.2000
+  },
+  {
+    "vendedorpessoa_id": "000000-0000-0000-000001",
+    "vendabruta": 640.2000,
+    "vendaliquida": 510.2000,
+    "ticketmedio": 3.000,
+    "mediadiaria": 64.0200,
+    "margem": 12.000,
+    "valortotaldevolucao": 30.2000,
+    "valortotalcancelamento": 80.0000,
+    "valortotaldesconto": 20.0000,
+    "valortotal": 510.2000
+  }
+]

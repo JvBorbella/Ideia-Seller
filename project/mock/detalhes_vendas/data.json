@@ -1,0 +1,18 @@
+[
+  {
+    "movimentosaida_id": "000000-0000-0000-000000",
+    "empresa_codigo": "E1",
+    "empresa_nome": "Minha Empresa",
+    "valortotal": 0.0000,
+    "valorsubtotal": 0.0000,
+    "out_desp": 0.0000,
+    "valortotaldesconto": 0.0000,
+    "valorfrete": 0.0000,
+    "margem": 0.000,
+    "pessoa_codigo": "000002",
+    "pessoa_nome": "Matheus",
+    "numeropedido": "000001",
+    "numeromovimento": "000001",
+    "terminal": "PDVCX01"
+  }
+]

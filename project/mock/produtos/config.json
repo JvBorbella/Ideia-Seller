@@ -1,0 +1,13 @@
+{
+    "module": "Movimento Saída Produto",
+    "public": true,
+    "key": "movimentosaidaproduto_id",
+    "required": [
+        "movimentosaidaproduto_id",
+        "movimentosaida_id"
+    ],
+    "search": [
+        "movimentosaida_id",
+        "movimentosaidaproduto_id"
+    ]
+}

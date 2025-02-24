@@ -1,0 +1,30 @@
+[
+  {
+    "pessoa_id": "000000-0000-0000-000000",
+    "codigo": "000001",
+    "nome": "Cliente 01",
+    "valorcredito": 0.0000,
+    "flagadimplencia": 0
+  },
+  {
+    "pessoa_id": "111111-1111-1111-111111",
+    "codigo": "000002",
+    "nome": "Cliente 02",
+    "valorcredito": 0.0000,
+    "flagadimplencia": 0
+  },
+  {
+    "pessoa_id": "222222-2222-2222-222222",
+    "codigo": "000003",
+    "nome": "Cliente 03",
+    "valorcredito": 0.0000,
+    "flagadimplencia": 0
+  },
+  {
+    "pessoa_id": "333333-3333-3333-333333",
+    "codigo": "000004",
+    "nome": "Cliente 04",
+    "valorcredito": 0.0000,
+    "flagadimplencia": 0
+  }
+]

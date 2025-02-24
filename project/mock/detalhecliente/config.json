@@ -1,0 +1,11 @@
+{
+    "module": "Detalhes de Clientes",
+    "public": true,
+    "key": "pessoa_id",
+    "required": [
+        "pessoa_id"
+    ],
+    "search": [
+        "pessoa_id"
+    ]
+}

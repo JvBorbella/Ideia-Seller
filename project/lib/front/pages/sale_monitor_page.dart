@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:project/back/sales_monitor_functions/sale_monitor_data.dart';
 import 'package:project/front/components/buttons/action_button.dart';
 import 'package:project/front/components/buttons/custom_button.dart';
 import 'package:project/front/components/buttons/drawer_button.dart';
@@ -10,17 +12,45 @@ import 'package:project/front/components/texts/titles.dart';
 import 'package:project/front/pages/sale_list_page.dart';
 import 'package:project/front/pages/seller_monitor_page.dart';
 import 'package:project/front/style/style.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SaleMonitor extends StatefulWidget {
-  const SaleMonitor({super.key});
+  final vendedorpessoa_id;
+  const SaleMonitor({Key? key, this.vendedorpessoa_id});
 
   @override
   State<SaleMonitor> createState() => _SaleMonitorState();
 }
 
 class _SaleMonitorState extends State<SaleMonitor> {
+  String urlBasic = '';
   String selectedOptionChild = '';
+  int flagToday = 0;
+  int flagYesterday = 0;
+  int flagWeek = 0;
   int flagMonth = 0;
+  bool isLoading = true;
+
+  String vendedorpessoa_id = '';
+  double vendabruta = 0.0;
+  double vendaliquida = 0.0;
+  double ticketmedio = 0.0;
+  double mediadiaria = 0.0;
+  double margem = 0.0;
+  double valortotaldevolucao = 0.0;
+  double valortotalcancelamento = 0.0;
+  double valortotaldesconto = 0.0;
+  double valortotal = 0.0;
+
+  NumberFormat currencyFormatDefault =
+      NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +59,19 @@ class _SaleMonitorState extends State<SaleMonitor> {
       Navigator.of(context).pop();
     }
 
+    if (isLoading) {
+      return Scaffold(
+        body: Center(
+          child: Container(
+              height: Style.CircularProgressIndicatorWidth(context),
+              width: Style.CircularProgressIndicatorWidth(context),
+              child: CircularProgressIndicator(
+                year2023: false,
+                strokeWidth: Style.CircularProgressIndicatorSize(context),
+              )),
+        ),
+      );
+    }
     return SafeArea(
         child: WillPopScope(
             child: Scaffold(
@@ -177,15 +220,15 @@ class _SaleMonitorState extends State<SaleMonitor> {
                                         onSelected: (String value) async {
                                           if (value == 'Hoje') {
                                             setState(() {
-                                              flagMonth = 0;
+                                              flagToday = 1;
                                             });
                                           } else if (value == 'Ontem') {
                                             setState(() {
-                                              flagMonth = 0;
+                                              flagYesterday = 1;
                                             });
                                           } else if (value == 'Semana') {
                                             setState(() {
-                                              flagMonth = 0;
+                                              flagWeek = 1;
                                             });
                                           } else if (value == 'Mês') {
                                             setState(() {
@@ -258,7 +301,9 @@ class _SaleMonitorState extends State<SaleMonitor> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         TextCard(
-                          text: 'RS 000.000,00',
+                          text: currencyFormatDefault
+                              .format(vendabruta)
+                              .toString(),
                           fontSize: Style.height_20(context),
                           textAlign: TextAlign.center,
                           color: Style.tertiaryColor,
@@ -284,7 +329,9 @@ class _SaleMonitorState extends State<SaleMonitor> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         TextCard(
-                          text: 'RS 000.000,00',
+                          text: currencyFormatDefault
+                              .format(vendaliquida)
+                              .toString(),
                           fontSize: Style.height_20(context),
                           textAlign: TextAlign.center,
                           color: Style.tertiaryColor,
@@ -315,7 +362,7 @@ class _SaleMonitorState extends State<SaleMonitor> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 TextCard(
-                                  text: 'RS 000,00',
+                                  text: ticketmedio.toString(),
                                   fontSize: Style.height_10(context),
                                   textAlign: TextAlign.center,
                                   color: Style.tertiaryColor,
@@ -342,7 +389,9 @@ class _SaleMonitorState extends State<SaleMonitor> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 TextCard(
-                                  text: 'RS 000,00',
+                                  text: currencyFormatDefault
+                                      .format(mediadiaria)
+                                      .toString(),
                                   fontSize: Style.height_10(context),
                                   textAlign: TextAlign.center,
                                   color: Style.tertiaryColor,
@@ -369,7 +418,7 @@ class _SaleMonitorState extends State<SaleMonitor> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 TextCard(
-                                  text: '0.00%',
+                                  text: margem.toString(),
                                   fontSize: Style.height_10(context),
                                   textAlign: TextAlign.center,
                                   color: Style.tertiaryColor,
@@ -404,7 +453,9 @@ class _SaleMonitorState extends State<SaleMonitor> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 TextCard(
-                                  text: 'RS 000,00',
+                                  text: currencyFormatDefault
+                                      .format(valortotaldevolucao)
+                                      .toString(),
                                   fontSize: Style.height_10(context),
                                   textAlign: TextAlign.center,
                                   color: Style.tertiaryColor,
@@ -431,7 +482,9 @@ class _SaleMonitorState extends State<SaleMonitor> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 TextCard(
-                                  text: 'RS 000,00',
+                                  text: currencyFormatDefault
+                                      .format(valortotalcancelamento)
+                                      .toString(),
                                   fontSize: Style.height_10(context),
                                   textAlign: TextAlign.center,
                                   color: Style.tertiaryColor,
@@ -461,7 +514,9 @@ class _SaleMonitorState extends State<SaleMonitor> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         TextCard(
-                          text: 'RS 000.000,00',
+                          text: currencyFormatDefault
+                              .format(valortotaldesconto)
+                              .toString(),
                           fontSize: Style.height_15(context),
                           textAlign: TextAlign.center,
                           color: Style.tertiaryColor,
@@ -484,7 +539,9 @@ class _SaleMonitorState extends State<SaleMonitor> {
                           ),
                         ),
                         Titles(
-                          text: 'RS 000.000,00',
+                          text: currencyFormatDefault
+                              .format(valortotal)
+                              .toString(),
                           fontSize: Titles.h2(context),
                           FontWeight: FontWeight.bold,
                         )
@@ -607,7 +664,7 @@ class _SaleMonitorState extends State<SaleMonitor> {
                       onPressed: () {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (context) => SaleListPage(),
+                            builder: (context) => SaleListPage(pessoa_id: widget.vendedorpessoa_id,),
                           ),
                         );
                       },
@@ -1011,7 +1068,7 @@ class _SaleMonitorState extends State<SaleMonitor> {
                                 onPressed: () {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
-                                      builder: (context) => SaleListPage(),
+                                      builder: (context) => SaleListPage(pessoa_id: widget.vendedorpessoa_id,),
                                     ),
                                   );
                                 },
@@ -1037,5 +1094,40 @@ class _SaleMonitorState extends State<SaleMonitor> {
               );
               return true;
             }));
+  }
+
+  Future<void> _loadSavedUrlBasic() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String savedUrlBasic = await sharedPreferences.getString('urlBasic') ?? '';
+    setState(() {
+      urlBasic = savedUrlBasic;
+    });
+  }
+
+  Future<void> fetchDataSaleMonitor() async {
+    Map<String?, dynamic> fetchedData =
+        await DataServiceSaleMonitor.fetchDataSaleMonitor(
+            widget.vendedorpessoa_id, urlBasic);
+    print(widget.vendedorpessoa_id);
+    setState(() {
+      vendedorpessoa_id = fetchedData['vendedorpessoa_id'] ?? '';
+      vendabruta = fetchedData['vendabruta'] ?? 0.0;
+      vendaliquida = fetchedData['vendaliquida'] ?? 0.0;
+      ticketmedio = fetchedData['ticketmedio'] ?? 0.0;
+      mediadiaria = fetchedData['mediadiaria'] ?? 0.0;
+      margem = fetchedData['margem'] ?? 0.0;
+      valortotaldevolucao = fetchedData['valortotaldevolucao'] ?? 0.0;
+      valortotalcancelamento = fetchedData['valortotalcancelamento'] ?? 0.0;
+      valortotaldesconto = fetchedData['valortotaldesconto'] ?? 0.0;
+      valortotal = fetchedData['valortotal'] ?? 0.0;
+    });
+  }
+
+  Future<void> loadData() async {
+    await Future.wait([_loadSavedUrlBasic()]);
+    await Future.wait([fetchDataSaleMonitor()]);
+    setState(() {
+      isLoading = false;
+    });
   }
 }

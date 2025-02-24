@@ -1,0 +1,13 @@
+{
+    "module": "Movimento Saída Pagamento",
+    "public": true,
+    "key": "movimentosaida_id",
+    "required": [
+        "movimentosaida_id",
+        "movimentosaidapagamento_id"
+    ],
+    "search": [
+        "movimentosaida_id",
+        "movimentosaidapagamento_id"
+    ]
+}

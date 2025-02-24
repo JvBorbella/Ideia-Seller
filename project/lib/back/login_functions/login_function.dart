@@ -67,7 +67,7 @@ class LoginFunction {
 // Navegue para a HomePage
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => SellerMonitorPage()),
+            MaterialPageRoute(builder: (context) => SellerMonitorPage(userController: userController.text)),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(

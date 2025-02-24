@@ -54,7 +54,7 @@ class _SplashPageState extends State<SplashPage> {
                   //Chamando a animação do texto abaixo da imagem
                   children: [
                     TextSplash(
-                      text: 'IdeiaSeller',
+                      text: 'Seller',
                     ),
                   ],
                 ),

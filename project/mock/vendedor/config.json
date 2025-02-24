@@ -1,0 +1,13 @@
+{
+    "module": "Vendedor",
+    "public": true,
+    "key": "nome",
+    "required": [
+        "id_vendedor",
+        "codigo",
+        "nome"
+    ],
+    "search": [
+        "nome"
+    ]
+}

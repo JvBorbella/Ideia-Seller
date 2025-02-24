@@ -1,0 +1,15 @@
+{
+    "module": "Carteira de clientes",
+    "public": true,
+    "key": "pessoavendedor_id",
+    "required": [
+        "pessoavendedor_id",
+        "pessoa_id",
+        "codigo",
+        "nome"
+    ],
+    "search": [
+        "codigo",
+        "nome"
+    ]
+}
