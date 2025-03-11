@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mirai/mirai.dart';
 import 'package:project/front/pages/splash_page.dart';
 
-void main() {
+void main() async {
+  await Mirai.initialize();
   runApp(const MyApp());
 }
 

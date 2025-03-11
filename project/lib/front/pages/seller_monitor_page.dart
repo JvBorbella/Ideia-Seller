@@ -1,5 +1,9 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mirai/mirai.dart';
 import 'package:project/back/seller_monitor/seller_monitor_data.dart';
 import 'package:project/front/components/buttons/drawer_button.dart';
 import 'package:project/front/components/structure/form_card.dart';
@@ -53,6 +57,7 @@ class _SellerMonitorPageState extends State<SellerMonitorPage> {
   @override
   void initState() {
     // TODO: implement initState
+    Mirai.initialize();
     super.initState();
     loadData();
   }
@@ -103,17 +108,19 @@ class _SellerMonitorPageState extends State<SellerMonitorPage> {
                       maxRadius: Style.height_80(context),
                       // foregroundImage: AssetImage('assets/images/user.jpg'),
                       child: ClipOval(
-                        child: imagem.isEmpty ? Image.asset(
-                          'assets/images/user.png',
-                          alignment: Alignment.topCenter,
-                          fit: BoxFit.cover,
-                          filterQuality: FilterQuality.high,
-                        ) : Image.network(
-                          imagem,
-                          alignment: Alignment.topCenter,
-                          fit: BoxFit.cover,
-                          filterQuality: FilterQuality.high,
-                        ),
+                        child: imagem.isEmpty
+                            ? Image.asset(
+                                'assets/images/user.png',
+                                alignment: Alignment.topCenter,
+                                fit: BoxFit.cover,
+                                filterQuality: FilterQuality.high,
+                              )
+                            : Image.network(
+                                imagem,
+                                alignment: Alignment.topCenter,
+                                fit: BoxFit.cover,
+                                filterQuality: FilterQuality.high,
+                              ),
                       ),
                     ),
                     SizedBox(
@@ -123,10 +130,56 @@ class _SellerMonitorPageState extends State<SellerMonitorPage> {
                       text: codigo,
                       fontSize: Titles.h3(context),
                     ),
-                    Titles(
-                      text: nome,
-                      fontSize: Titles.h3(context),
+                    // FutureBuilder<String>(
+                    //   future: fetchSellerData(),
+                    //   builder: (context, snapshot) {
+                    //     if (snapshot.connectionState ==
+                    //         ConnectionState.waiting) {
+                    //       return Titles(
+                    //           text: 'Carregando...',
+                    //           fontSize: Titles.h3(context));
+                    //     } else if (snapshot.hasError) {
+                    //       return Titles(
+                    //           text: 'Erro ao carregar',
+                    //           fontSize: Titles.h3(context));
+                    //     } else {
+                    //       return Titles(
+                    //           text: snapshot.data ?? '',
+                    //           fontSize: Titles.h3(context));
+                    //     }
+                    //   },
+                    // ),
+                    Container(
+                      padding: EdgeInsets.only(
+                        left: Style.height_70(context),
+                        right: Style.height_70(context),
+                      ),
+                      width: Style.width_80(context),
+                      child: Mirai.fromNetwork(
+                        context: context,
+                        loadingWidget: (context) => Container(
+                            width: Style.width_80(context),
+                              child: LinearProgressIndicator(
+                                year2023: false,
+                              )),
+                        request: MiraiNetworkRequest(
+                            url:'http://licenciamento.ideiatecnologia.com.br:8997/ideia/public/seller_data_list.json',
+                            method: Method.post)),
                     ),
+                    
+                    // MiraiApp(
+                    //   homeBuilder: (context) => Mirai.fromNetwork(
+                    //     context: context,
+                    //     request: MiraiNetworkRequest(
+                    //       url: 'http://licenciamento.ideiatecnologia.com.br:8997/ideia/public/seller_data_list.json',
+                    //       method: Method.post
+                    //     )
+                    // )
+                    // ),
+                    // Titles(
+                    //   text: nome,
+                    //   fontSize: Titles.h3(context),
+                    // ),
                     SizedBox(
                       height: Style.height_15(context),
                     ),
@@ -169,31 +222,41 @@ class _SellerMonitorPageState extends State<SellerMonitorPage> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 TextCard(
-                                  text: currencyFormat.format(vendashoje).toString(),
+                                  text: currencyFormat
+                                      .format(vendashoje)
+                                      .toString(),
                                   fontSize: Style.height_12(context),
                                   textAlign: TextAlign.right,
                                   FontWeight: FontWeight.bold,
                                 ),
                                 TextCard(
-                                  text: currencyFormat.format(vendasontem).toString(),
+                                  text: currencyFormat
+                                      .format(vendasontem)
+                                      .toString(),
                                   fontSize: Style.height_12(context),
                                   textAlign: TextAlign.right,
                                   FontWeight: FontWeight.bold,
                                 ),
                                 TextCard(
-                                  text: currencyFormat.format(vendassemana).toString(),
+                                  text: currencyFormat
+                                      .format(vendassemana)
+                                      .toString(),
                                   fontSize: Style.height_12(context),
                                   textAlign: TextAlign.right,
                                   FontWeight: FontWeight.bold,
                                 ),
                                 TextCard(
-                                  text: currencyFormat.format(vendasmes).toString(),
+                                  text: currencyFormat
+                                      .format(vendasmes)
+                                      .toString(),
                                   fontSize: Style.height_12(context),
                                   textAlign: TextAlign.right,
                                   FontWeight: FontWeight.bold,
                                 ),
                                 TextCard(
-                                  text: currencyFormat.format(vendasmesanterior).toString(),
+                                  text: currencyFormat
+                                      .format(vendasmesanterior)
+                                      .toString(),
                                   fontSize: Style.height_12(context),
                                   textAlign: TextAlign.right,
                                   FontWeight: FontWeight.bold,
@@ -208,9 +271,8 @@ class _SellerMonitorPageState extends State<SellerMonitorPage> {
                       onPressed: () {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (context) => SaleMonitor(
-                              vendedorpessoa_id: pessoa_id
-                            ),
+                            builder: (context) =>
+                                SaleMonitor(vendedorpessoa_id: pessoa_id),
                           ),
                         );
                       },
@@ -416,8 +478,24 @@ class _SellerMonitorPageState extends State<SellerMonitorPage> {
     await Future.wait([_loadSavedUrlBasic()]);
     await Future.wait([_loadSavedUser()]);
     await Future.wait([fetchDataSellerMonitor()]);
+    await Future.wait([fetchSellerData()]);
     setState(() {
       isLoading = false;
     });
+  }
+
+  Future<String> fetchSellerData() async {
+    final response = await http.post(
+      Uri.parse(
+          'http://licenciamento.ideiatecnologia.com.br:8997/ideia/public/seller_data.json'),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['value'] ??
+          'Nome não encontrado'; // Substitua pelo campo correto do JSON
+    } else {
+      throw Exception('Erro ao buscar dados');
+    }
   }
 }

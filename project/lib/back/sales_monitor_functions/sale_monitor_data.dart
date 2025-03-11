@@ -64,8 +64,8 @@ class DataServiceSaleMonitor {
 
     try {
       //Definindo a url da requisição.
-      var urlPost = Uri.parse(
-          'http://192.168.134.194:8000/api/mock/hoje/$pessoa_id');
+      var urlPost =
+          Uri.parse('http://192.168.211.23:8000/api/mock/hoje/$pessoa_id');
 
       print(urlPost);
 
@@ -84,9 +84,12 @@ class DataServiceSaleMonitor {
           ticketmedio = (jsonData['data'][0]['ticketmedio'] ?? 0).toDouble();
           mediadiaria = (jsonData['data'][0]['mediadiaria'] ?? 0).toDouble();
           margem = (jsonData['data'][0]['margem'] ?? 0).toDouble();
-          valortotaldevolucao = (jsonData['data'][0]['valortotaldevolucao'] ?? 0).toDouble();
-          valortotalcancelamento = (jsonData['data'][0]['valortotalcancelamento'] ?? 0).toDouble();
-          valortotaldesconto = (jsonData['data'][0]['valortotaldesconto'] ?? 0).toDouble();
+          valortotaldevolucao =
+              (jsonData['data'][0]['valortotaldevolucao'] ?? 0).toDouble();
+          valortotalcancelamento =
+              (jsonData['data'][0]['valortotalcancelamento'] ?? 0).toDouble();
+          valortotaldesconto =
+              (jsonData['data'][0]['valortotaldesconto'] ?? 0).toDouble();
           valortotal = (jsonData['data'][0]['valortotal'] ?? 0).toDouble();
         } else {
           print('Dados do cliente não encontrados');

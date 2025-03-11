@@ -29,7 +29,8 @@ class SaleList {
       //Atribuindo os dados do json a essas variáveis.
       vendedorpessoa_id: (json['vendedorpessoa_id'] ?? '').toString(),
       movimentosaida_id: (json['movimentosaida_id'] ?? ''),
-      datahora: json['datahora'] != null ? DateTime.parse(json['datahora']) : null,
+      datahora:
+          json['datahora'] != null ? DateTime.parse(json['datahora']) : null,
       nomecondicaopagamento: (json['nomecondicaopagamento'] ?? ''),
       numeromovimento: (json['numeromovimento'] ?? ''),
       flagvendaservico: (json['flagvendaservico'] ?? 0).toInt(),
@@ -52,7 +53,7 @@ class DataServiceSaleList {
     try {
       //Definindo a url da requisição.
       var urlPost =
-          Uri.parse('http://192.168.134.194:8000/api/mock/vendas/$pessoa_id');
+          Uri.parse('http://192.168.211.23:8000/api/mock/vendas/$pessoa_id');
 
       print(urlPost);
 
@@ -65,7 +66,9 @@ class DataServiceSaleList {
 
         if (jsonData.containsKey('data')) {
           //Caso o campo seja encontrado dentro do json, os dados serão atribuidos a essas variáveis.
-          saleList = (jsonData['data'] as List).map((e) => SaleList.fromJson(e)).toList();
+          saleList = (jsonData['data'] as List)
+              .map((e) => SaleList.fromJson(e))
+              .toList();
         } else {
           print('Dados do cliente não encontrados');
         }

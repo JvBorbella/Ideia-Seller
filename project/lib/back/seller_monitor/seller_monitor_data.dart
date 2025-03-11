@@ -89,7 +89,7 @@ class DataServiceSellerMonitor {
     try {
       //Definindo a url da requisição.
       var urlPost =
-          Uri.parse('http://192.168.134.194:8000/api/mock/vendedor/$usuario');
+          Uri.parse('http://192.168.211.23:8000/api/mock/vendedor/$usuario');
 
       //Variável que irá receber a resposta da requisição.
       var response = await http.get(urlPost);
@@ -112,7 +112,8 @@ class DataServiceSellerMonitor {
           vendasontem = (jsonData['data'][0]['vendasontem'] ?? 0).toDouble();
           vendassemana = (jsonData['data'][0]['vendassemana'] ?? 0).toDouble();
           vendasmes = (jsonData['data'][0]['vendasmes'] ?? 0).toDouble();
-          vendasmesanterior = (jsonData['data'][0]['vendasmesanterior'] ?? 0).toDouble();
+          vendasmesanterior =
+              (jsonData['data'][0]['vendasmesanterior'] ?? 0).toDouble();
           clientes_inadimplentes =
               jsonData['data'][0]['clientes_inadimplentes'] ?? 0;
           clientes_adimplentes =
