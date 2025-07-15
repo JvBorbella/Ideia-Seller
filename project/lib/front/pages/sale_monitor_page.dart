@@ -1125,7 +1125,7 @@ class _SaleMonitorState extends State<SaleMonitor> {
 
   Future<void> loadData() async {
     await Future.wait([_loadSavedUrlBasic()]);
-    await Future.wait([fetchDataSaleMonitor()]);
+    //await Future.wait([fetchDataSaleMonitor()]);
     setState(() {
       isLoading = false;
     });

@@ -126,7 +126,8 @@ class _SaleListPageState extends State<SaleListPage> {
                                       textAlign: TextAlign.center,
                                     ),
                                     TextCard(
-                                      text: saleList[index].numeromovimento,
+                                      //text: saleList[index].numeromovimento,
+                                      text: '000001',
                                       fontSize: Style.height_10(context),
                                       color: Style.primaryColor,
                                       textAlign: TextAlign.center,
@@ -145,8 +146,8 @@ class _SaleListPageState extends State<SaleListPage> {
                                         textAlign: TextAlign.center,
                                       ),
                                       TextCard(
-                                        text: (saleList[index].datahora)
-                                            .toString(),
+                                         //text: (saleList[index].datahora).toString(),
+                                        text: 'XX/XX/XXXX',
                                         fontSize: Style.height_10(context),
                                         color: Style.primaryColor,
                                         textAlign: TextAlign.center,
@@ -164,8 +165,8 @@ class _SaleListPageState extends State<SaleListPage> {
                                       textAlign: TextAlign.center,
                                     ),
                                     TextCard(
-                                      text:
-                                          saleList[index].nomecondicaopagamento,
+                                      //text: saleList[index].nomecondicaopagamento,
+                                      text: 'DINHEIRO',
                                       fontSize: Style.height_10(context),
                                       color: Style.primaryColor,
                                       textAlign: TextAlign.center,
@@ -182,10 +183,11 @@ class _SaleListPageState extends State<SaleListPage> {
                                       textAlign: TextAlign.center,
                                     ),
                                     TextCard(
-                                      text:
-                                          saleList[index].flagvendaservico == 1
-                                              ? 'Sim'
-                                              : 'Não',
+                                      // text:
+                                      //     saleList[index].flagvendaservico == 1
+                                      //         ? 'Sim'
+                                      //         : 'Não',
+                                      text: 'Não',
                                       fontSize: Style.height_10(context),
                                       color: Style.primaryColor,
                                       textAlign: TextAlign.center,
@@ -202,7 +204,8 @@ class _SaleListPageState extends State<SaleListPage> {
                                       textAlign: TextAlign.center,
                                     ),
                                     TextCard(
-                                      text: (saleList[index].margem).toString(),
+                                      //text: (saleList[index].margem).toString(),
+                                      text: '0.0%',
                                       fontSize: Style.height_10(context),
                                       color: Style.primaryColor,
                                       textAlign: TextAlign.center,
@@ -219,8 +222,8 @@ class _SaleListPageState extends State<SaleListPage> {
                                       textAlign: TextAlign.center,
                                     ),
                                     TextCard(
-                                      text: (saleList[index].valortotal)
-                                          .toString(),
+                                      //text: (saleList[index].valortotal).toString(),
+                                      text: '100.00',
                                       fontSize: Style.height_10(context),
                                       color: Style.primaryColor,
                                       textAlign: TextAlign.center,
@@ -245,7 +248,8 @@ class _SaleListPageState extends State<SaleListPage> {
                                       textAlign: TextAlign.center,
                                     ),
                                     TextCard(
-                                      text: saleList[index].pessoa_nome,
+                                      //text: saleList[index].pessoa_nome,
+                                      text: 'Cliente Teste',
                                       fontSize: Style.height_12(context),
                                       color: Style.primaryColor,
                                       textAlign: TextAlign.center,
@@ -286,19 +290,19 @@ class _SaleListPageState extends State<SaleListPage> {
     });
   }
 
-  Future<void> fetchDataSaleList() async {
-    List<SaleList>? fetchedData =
-        await DataServiceSaleList.fetchDataSaleList(widget.pessoa_id, urlBasic);
-    if (fetchedData != null) {
-      setState(() {
-        saleList = fetchedData;
-      });
-    }
-  }
+  // Future<void> fetchDataSaleList() async {
+  //   List<SaleList>? fetchedData =
+  //       await DataServiceSaleList.fetchDataSaleList(widget.pessoa_id, urlBasic);
+  //   if (fetchedData != null) {
+  //     setState(() {
+  //       saleList = fetchedData;
+  //     });
+  //   }
+  // }
 
   Future<void> loadData() async {
     await Future.wait([_loadSavedUrlBasic()]);
-    await Future.wait([fetchDataSaleList()]);
+    //await Future.wait([fetchDataSaleList()]);
     setState(() {
       isLoading = false;
     });

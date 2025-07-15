@@ -163,7 +163,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       Row(
                                         children: [
                                           Text(
-                                            '${empresa_codigo} - ${empresa_nome}',
+                                            //'${empresa_codigo} - ${empresa_nome}',
+                                            'E1 - Empresa Fictícia',
                                             style: TextStyle(
                                               fontFamily: 'Poppins-Regular',
                                               fontSize:
@@ -176,7 +177,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       Row(
                                         children: [
                                           Text(
-                                            email,
+                                            //email,
+                                            'suporte@ideiatecnologia.com.br',
                                             style: TextStyle(
                                               fontFamily: 'Poppins-Regular',
                                               fontSize:
@@ -591,6 +593,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
     await Future.wait([_loadSavedUrlBasic()]);
     await Future.wait([_loadSavedUser()]);
     await Future.wait([_loadSavedLogin()]);
-    await Future.wait([fetchDataSellerMonitor()]);
+    //await Future.wait([fetchDataSellerMonitor()]);
   }
 }

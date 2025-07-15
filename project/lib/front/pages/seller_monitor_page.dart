@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mirai/mirai.dart';
+// import 'package:mirai/mirai.dart';
 import 'package:project/back/seller_monitor/seller_monitor_data.dart';
 import 'package:project/front/components/buttons/drawer_button.dart';
 import 'package:project/front/components/structure/form_card.dart';
@@ -57,7 +57,7 @@ class _SellerMonitorPageState extends State<SellerMonitorPage> {
   @override
   void initState() {
     // TODO: implement initState
-    Mirai.initialize();
+    // Mirai.initialize();
     super.initState();
     loadData();
   }
@@ -129,10 +129,10 @@ class _SellerMonitorPageState extends State<SellerMonitorPage> {
                     SizedBox(
                       height: Style.height_15(context),
                     ),
-                    // Titles(
-                    //   text: codigo,
-                    //   fontSize: Titles.h3(context),
-                    // ),
+                    Titles(
+                      text: 'Vendedor Código',
+                      fontSize: Titles.h3(context),
+                    ),
                     // FutureBuilder<String>(
                     //   future: fetchSellerData(),
                     //   builder: (context, snapshot) {
@@ -152,23 +152,18 @@ class _SellerMonitorPageState extends State<SellerMonitorPage> {
                     //     }
                     //   },
                     // ),
-                    Container(
-                      // padding: EdgeInsets.only(
-                      //   left: Style.height_70(context),
-                      //   right: Style.height_70(context),
-                      // ),
-                      // width: Style.width_80(context),
-                      child: Mirai.fromNetwork(
-                        context: context,
-                        loadingWidget: (context) => Container(
-                            width: Style.width_80(context),
-                              child: LinearProgressIndicator(
-                                year2023: false,
-                              )),
-                        request: MiraiNetworkRequest(
-                            url:'http://licenciamento.ideiatecnologia.com.br:8997/ideia/public/seller_data_list.json',
-                            method: Method.post)),
-                    ),
+                    // Container(
+                    //   child: Mirai.fromNetwork(
+                    //     context: context,
+                    //     loadingWidget: (context) => Container(
+                    //         width: Style.width_80(context),
+                    //           child: LinearProgressIndicator(
+                    //             year2023: false,
+                    //           )),
+                    //     request: MiraiNetworkRequest(
+                    //         url:'http://licenciamento.ideiatecnologia.com.br:8997/ideia/public/seller_data_list.json',
+                    //         method: Method.post)),
+                    // ),
                     
                     // MiraiApp(
                     //   homeBuilder: (context) => Mirai.fromNetwork(
@@ -179,108 +174,108 @@ class _SellerMonitorPageState extends State<SellerMonitorPage> {
                     //     )
                     // )
                     // ),
-                    // Titles(
-                    //   text: nome,
-                    //   fontSize: Titles.h3(context),
-                    // ),
+                    Titles(
+                      text: 'Vendedor Nome',
+                      fontSize: Titles.h3(context),
+                    ),
                     SizedBox(
                       height: Style.height_15(context),
                     ),
                     InteractiveCard(
                       children: [
-                        Mirai.fromNetwork(
-                        context: context,
-                        loadingWidget: (context) => Container(
-                            width: Style.width_80(context),
-                              child: CircularProgressIndicator(
-                                padding: EdgeInsets.all(
-                                  Style.height_20(context)
+                        // Mirai.fromNetwork(
+                        // context: context,
+                        // loadingWidget: (context) => Container(
+                        //     width: Style.width_80(context),
+                        //       child: CircularProgressIndicator(
+                        //         padding: EdgeInsets.all(
+                        //           Style.height_20(context)
+                        //         ),
+                        //         year2023: false,
+                        //       )),
+                        // request: MiraiNetworkRequest(
+                        //     url:'http://licenciamento.ideiatecnologia.com.br:8997/ideia/public/periodic_values.json',
+                        //     method: Method.post)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TextCard(
+                                  text: 'Hoje',
+                                  fontSize: Style.height_12(context),
+                                  textAlign: TextAlign.left,
                                 ),
-                                year2023: false,
-                              )),
-                        request: MiraiNetworkRequest(
-                            url:'http://licenciamento.ideiatecnologia.com.br:8997/ideia/public/periodic_values.json',
-                            method: Method.post)),
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        //   children: [
-                        //     Column(
-                        //       crossAxisAlignment: CrossAxisAlignment.start,
-                        //       children: [
-                        //         TextCard(
-                        //           text: 'Hoje',
-                        //           fontSize: Style.height_12(context),
-                        //           textAlign: TextAlign.left,
-                        //         ),
-                        //         TextCard(
-                        //           text: 'Ontem',
-                        //           fontSize: Style.height_12(context),
-                        //           textAlign: TextAlign.left,
-                        //         ),
-                        //         TextCard(
-                        //           text: 'Semana',
-                        //           fontSize: Style.height_12(context),
-                        //           textAlign: TextAlign.left,
-                        //         ),
-                        //         TextCard(
-                        //           text: 'Mês',
-                        //           fontSize: Style.height_12(context),
-                        //           textAlign: TextAlign.left,
-                        //         ),
-                        //         TextCard(
-                        //           text: 'Mês anterior',
-                        //           fontSize: Style.height_12(context),
-                        //           textAlign: TextAlign.left,
-                        //         ),
-                        //       ],
-                        //     ),
-                        //     Column(
-                        //       crossAxisAlignment: CrossAxisAlignment.end,
-                        //       children: [
-                        //         TextCard(
-                        //           text: currencyFormat
-                        //               .format(vendashoje)
-                        //               .toString(),
-                        //           fontSize: Style.height_12(context),
-                        //           textAlign: TextAlign.right,
-                        //           FontWeight: FontWeight.bold,
-                        //         ),
-                        //         TextCard(
-                        //           text: currencyFormat
-                        //               .format(vendasontem)
-                        //               .toString(),
-                        //           fontSize: Style.height_12(context),
-                        //           textAlign: TextAlign.right,
-                        //           FontWeight: FontWeight.bold,
-                        //         ),
-                        //         TextCard(
-                        //           text: currencyFormat
-                        //               .format(vendassemana)
-                        //               .toString(),
-                        //           fontSize: Style.height_12(context),
-                        //           textAlign: TextAlign.right,
-                        //           FontWeight: FontWeight.bold,
-                        //         ),
-                        //         TextCard(
-                        //           text: currencyFormat
-                        //               .format(vendasmes)
-                        //               .toString(),
-                        //           fontSize: Style.height_12(context),
-                        //           textAlign: TextAlign.right,
-                        //           FontWeight: FontWeight.bold,
-                        //         ),
-                        //         TextCard(
-                        //           text: currencyFormat
-                        //               .format(vendasmesanterior)
-                        //               .toString(),
-                        //           fontSize: Style.height_12(context),
-                        //           textAlign: TextAlign.right,
-                        //           FontWeight: FontWeight.bold,
-                        //         ),
-                        //       ],
-                        //     ),
-                        //   ],
-                        // )
+                                TextCard(
+                                  text: 'Ontem',
+                                  fontSize: Style.height_12(context),
+                                  textAlign: TextAlign.left,
+                                ),
+                                TextCard(
+                                  text: 'Semana',
+                                  fontSize: Style.height_12(context),
+                                  textAlign: TextAlign.left,
+                                ),
+                                TextCard(
+                                  text: 'Mês',
+                                  fontSize: Style.height_12(context),
+                                  textAlign: TextAlign.left,
+                                ),
+                                TextCard(
+                                  text: 'Mês anterior',
+                                  fontSize: Style.height_12(context),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                TextCard(
+                                  text: currencyFormat
+                                      .format(vendashoje)
+                                      .toString(),
+                                  fontSize: Style.height_12(context),
+                                  textAlign: TextAlign.right,
+                                  FontWeight: FontWeight.bold,
+                                ),
+                                TextCard(
+                                  text: currencyFormat
+                                      .format(vendasontem)
+                                      .toString(),
+                                  fontSize: Style.height_12(context),
+                                  textAlign: TextAlign.right,
+                                  FontWeight: FontWeight.bold,
+                                ),
+                                TextCard(
+                                  text: currencyFormat
+                                      .format(vendassemana)
+                                      .toString(),
+                                  fontSize: Style.height_12(context),
+                                  textAlign: TextAlign.right,
+                                  FontWeight: FontWeight.bold,
+                                ),
+                                TextCard(
+                                  text: currencyFormat
+                                      .format(vendasmes)
+                                      .toString(),
+                                  fontSize: Style.height_12(context),
+                                  textAlign: TextAlign.right,
+                                  FontWeight: FontWeight.bold,
+                                ),
+                                TextCard(
+                                  text: currencyFormat
+                                      .format(vendasmesanterior)
+                                      .toString(),
+                                  fontSize: Style.height_12(context),
+                                  textAlign: TextAlign.right,
+                                  FontWeight: FontWeight.bold,
+                                ),
+                              ],
+                            ),
+                          ],
+                        )
                       ],
                       Text: 'Vendas ',
                       icon: Icons.monetization_on,
@@ -493,7 +488,7 @@ class _SellerMonitorPageState extends State<SellerMonitorPage> {
   Future<void> loadData() async {
     await Future.wait([_loadSavedUrlBasic()]);
     await Future.wait([_loadSavedUser()]);
-    await Future.wait([fetchDataSellerMonitor()]);
+    // await Future.wait([fetchDataSellerMonitor()]);
     // await Future.wait([fetchSellerData()]);
     setState(() {
       isLoading = false;
