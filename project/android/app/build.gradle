@@ -16,6 +16,13 @@ if (localPropertiesFile.exists()) {
     }
 }
 
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+
 def flutterVersionCode = localProperties.getProperty("flutter.versionCode")
 if (flutterVersionCode == null) {
     flutterVersionCode = "1"
@@ -47,14 +54,14 @@ android {
         versionName = flutterVersionName
         manifestPlaceholders = [EnableImpeller: "false"]
     }
-        signingConfigs {
-    release {
-        storeFile file("C:/Users/joaob/OneDrive/Documentos/GitHub/Pre-vendas-Mobile/projeto/upload-key.jks")
-        storePassword "3edsw21qa"
-        keyAlias "upload"
-        keyPassword "3edsw21qa"
+    signingConfigs {
+        release {
+            storeFile file("C:/Users/joaob/Documents/GitHub/ideia_seller/project/android/app/upload-key.jks")
+            storePassword "3edsw21qa"
+            keyAlias "upload"
+            keyPassword "3edsw21qa"
+        }
     }
-}
 
     buildTypes {
         release {

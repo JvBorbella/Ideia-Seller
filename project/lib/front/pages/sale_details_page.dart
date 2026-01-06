@@ -1,25 +1,80 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:project/back/sales_monitor_functions/sale_details_data.dart';
 import 'package:project/front/components/buttons/drawer_button.dart';
 import 'package:project/front/components/structure/informative_card.dart';
 import 'package:project/front/components/structure/navbar.dart';
 import 'package:project/front/components/texts/text_card.dart';
 import 'package:project/front/components/texts/titles.dart';
 import 'package:project/front/pages/sale_list_page.dart';
+import 'package:project/front/pages/sale_monitor_page.dart';
 import 'package:project/front/style/style.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SaleDetails extends StatefulWidget {
-  const SaleDetails({super.key});
+  final movimentosaidaId;
+  const SaleDetails({super.key, this.movimentosaidaId});
 
   @override
   State<SaleDetails> createState() => _SaleDetailsState();
 }
 
+bool isLoading = true;
+String urlBasic = '',
+    vendedorId = '',
+    codigopessoa = '',
+    nomepessoa = '',
+    empresaCodigo = '',
+    empresaNome = '',
+    numeroPedido = '',
+    numeromovimento = '',
+    terminal = '',
+    pessoa_id = '';
+double valortotalmovimento = 0.0,
+    valorsubtotal = 0.0,
+    outrasdespesas = 0.0,
+    valordesconto = 0.0,
+    valorfrete = 0.0,
+    margem = 0.0;
+List<SaleDetailsData> saleDetails = [], salesPayments = [];
+
+NumberFormat currencyFormatDefault =
+    NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
+
 class _SaleDetailsState extends State<SaleDetails> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadData();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Scaffold(
+        body: Center(
+          child: Container(
+              height: Style.CircularProgressIndicatorWidth(context),
+              width: Style.CircularProgressIndicatorWidth(context),
+              child: CircularProgressIndicator(
+                year2023: false,
+                strokeWidth: Style.CircularProgressIndicatorSize(context),
+              )),
+        ),
+      );
+    }
     return SafeArea(
-        child: WillPopScope(
-            child: Scaffold(
+        child: PopScope(
+        canPop: false, // 🔴 IMPORTANTE
+        onPopInvokedWithResult: (didPop, result) async {
+          Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => SaleListPage(),
+                ),
+              );
+        },
+      child: Scaffold(
               drawer: CustomDrawer(),
               body: ListView(
                 children: [
@@ -45,23 +100,96 @@ class _SaleDetailsState extends State<SaleDetails> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Titles(
-                            text: '(CÓDIGO) - (NOME DO CLIENTE)',
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text('Cliente: ', style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Style.primaryColor,
+                              fontSize: Titles.h3(context)
+                            ),
+                            textAlign: TextAlign.start,),
+                            Container(
+                              width: Style.width_320(context),
+                              child: Titles(
+                            text: '${codigopessoa} - ${nomepessoa}',
+                            textAlign: TextAlign.start,
                             fontSize: Titles.h3(context)),
-                        Titles(
-                            text: '(E1) - (Nome da Empresa)',
-                            fontSize: Style.height_10(context)),
-                        Titles(
-                            text: '(Nº do Pedido)',
-                            fontSize: Style.height_10(context)),
-                        Titles(
-                          text: '(Nº do Movimento)',
-                          fontSize: Style.height_10(context),
-                          FontWeight: FontWeight.bold,
+                            )
+                          ],
                         ),
-                        Titles(
-                            text: '(Terminal)',
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text('Empresa: ', style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Style.primaryColor,
+                              fontSize: Style.height_10(context)
+                            ),
+                            textAlign: TextAlign.start,),
+                            Container(
+                              width: Style.width_320(context),
+                              child: Titles(
+                            text: '${empresaCodigo} - ${empresaNome}',
+                            textAlign: TextAlign.start,
                             fontSize: Style.height_10(context)),
+                            )
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text('Nº Pedido: ', style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Style.primaryColor,
+                              fontSize: Style.height_10(context)
+                            ),
+                            textAlign: TextAlign.start,),
+                            Container(
+                              width: Style.width_320(context),
+                              child: Titles(
+                            text: '${numeroPedido}',
+                            textAlign: TextAlign.start,
+                            fontSize: Style.height_10(context)),
+                            )
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text('Nº Movimento: ', style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Style.primaryColor,
+                              fontSize: Style.height_10(context)
+                            ),
+                            textAlign: TextAlign.start,),
+                            Container(
+                              width: Style.width_320(context),
+                              child: Titles(
+                            text: '${numeromovimento}',
+                            textAlign: TextAlign.start,
+                            fontSize: Style.height_10(context)),
+                            )
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text('Terminal: ', style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Style.primaryColor,
+                              fontSize: Style.height_10(context)
+                            ),
+                            textAlign: TextAlign.start,),
+                            Container(
+                              width: Style.width_320(context),
+                              child: Titles(
+                            text: '${terminal}',
+                            textAlign: TextAlign.start,
+                            fontSize: Style.height_10(context)),
+                            )
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -81,7 +209,8 @@ class _SaleDetailsState extends State<SaleDetails> {
                               FontWeight: FontWeight.bold,
                             ),
                             TextCard(
-                              text: 'RS 000.000,00',
+                              text:
+                                  '${currencyFormatDefault.format(valortotalmovimento)}',
                               fontSize: Style.height_25(context),
                               color: Style.tertiaryColor,
                             )
@@ -101,7 +230,8 @@ class _SaleDetailsState extends State<SaleDetails> {
                               FontWeight: FontWeight.bold,
                             ),
                             TextCard(
-                              text: 'RS 000,00',
+                              text:
+                                  '${currencyFormatDefault.format(valorsubtotal)}',
                               fontSize: Style.height_8(context),
                               color: Style.tertiaryColor,
                             )
@@ -116,7 +246,8 @@ class _SaleDetailsState extends State<SaleDetails> {
                               FontWeight: FontWeight.bold,
                             ),
                             TextCard(
-                              text: 'RS 000,00',
+                              text:
+                                  '${currencyFormatDefault.format(outrasdespesas)}',
                               fontSize: Style.height_8(context),
                               color: Style.tertiaryColor,
                             )
@@ -131,7 +262,8 @@ class _SaleDetailsState extends State<SaleDetails> {
                               FontWeight: FontWeight.bold,
                             ),
                             TextCard(
-                              text: 'RS 000,00',
+                              text:
+                                  '${currencyFormatDefault.format(valordesconto)}',
                               fontSize: Style.height_8(context),
                               color: Style.tertiaryColor,
                             )
@@ -146,7 +278,8 @@ class _SaleDetailsState extends State<SaleDetails> {
                               FontWeight: FontWeight.bold,
                             ),
                             TextCard(
-                              text: 'RS 000,00',
+                              text:
+                                  '${currencyFormatDefault.format(valorfrete)}',
                               fontSize: Style.height_8(context),
                               color: Style.tertiaryColor,
                             )
@@ -161,7 +294,7 @@ class _SaleDetailsState extends State<SaleDetails> {
                               FontWeight: FontWeight.bold,
                             ),
                             TextCard(
-                              text: '0.00%',
+                              text: '${margem}%',
                               fontSize: Style.height_8(context),
                               color: Style.tertiaryColor,
                             )
@@ -189,120 +322,40 @@ class _SaleDetailsState extends State<SaleDetails> {
                     alignment: Alignment.center,
                     child: Table(
                       border: TableBorder.all(
-                          width: 1,
-                          color: Style.primaryColor,
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(Style.height_10(context)))),
+                        width: 1,
+                        color: Style.primaryColor,
+                        borderRadius:
+                            BorderRadius.circular(Style.height_10(context)),
+                      ),
                       children: [
+                        // HEADER
                         TableRow(
                           decoration: BoxDecoration(
-                              color: Style.primaryColor,
-                              borderRadius: BorderRadius.only(
-                                topLeft:
-                                    Radius.circular(Style.height_10(context)),
-                                topRight:
-                                    Radius.circular(Style.height_10(context)),
-                              )),
+                            color: Style.primaryColor,
+                            borderRadius: BorderRadius.only(
+                              topLeft:
+                                  Radius.circular(Style.height_10(context)),
+                              topRight:
+                                  Radius.circular(Style.height_10(context)),
+                            ),
+                          ),
                           children: [
-                            Container(
-                              padding: EdgeInsets.only(
-                                top: Style.height_10(context),
-                                bottom: Style.height_10(context),
-                              ),
-                              child: Text(
-                                'Meio de Pgto.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Style.tertiaryColor,
-                                  fontSize: Style.height_8(context),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                softWrap: true,
-                                overflow: TextOverflow.clip,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(
-                                top: Style.height_10(context),
-                                bottom: Style.height_10(context),
-                              ),
-                              child: Text(
-                                'Cond. Pgto.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Style.tertiaryColor,
-                                  fontSize: Style.height_8(context),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                softWrap: true,
-                                overflow: TextOverflow.clip,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(
-                                top: Style.height_10(context),
-                                bottom: Style.height_10(context),
-                              ),
-                              child: Text(
-                                'Valor',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Style.tertiaryColor,
-                                  fontSize: Style.height_8(context),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                softWrap: true,
-                                overflow: TextOverflow.clip,
-                              ),
-                            ),
+                            _headerCell('Cond. Pgto.'),
+                            _headerCell('Valor'),
                           ],
                         ),
-                        TableRow(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(
-                                top: Style.height_10(context),
-                                bottom: Style.height_10(context),
-                              ),
-                              child: Text(
-                                '',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: Style.height_8(context)),
-                                softWrap: true,
-                                overflow: TextOverflow.clip,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(
-                                top: Style.height_10(context),
-                                bottom: Style.height_10(context),
-                              ),
-                              child: Text(
-                                '',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: Style.height_8(context)),
-                                softWrap: true,
-                                overflow: TextOverflow.clip,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(
-                                top: Style.height_10(context),
-                                bottom: Style.height_10(context),
-                              ),
-                              child: Text(
-                                '',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: Style.height_8(context)),
-                                softWrap: true,
-                                overflow: TextOverflow.clip,
-                              ),
-                            ),
-                          ],
-                        ),
+
+                        // LINHAS DINÂMICAS
+                        ...salesPayments.map((item) {
+                          return TableRow(
+                            children: [
+                              _cell(item.nomecondicaopagamento.toString()),
+                              _cell(currencyFormatDefault
+                                  .format(item.valorpagamento)
+                                  .toString()),
+                            ],
+                          );
+                        }).toList(),
                       ],
                     ),
                   ),
@@ -325,226 +378,134 @@ class _SaleDetailsState extends State<SaleDetails> {
                     alignment: Alignment.center,
                     child: Table(
                       border: TableBorder.all(
-                          width: 1,
-                          color: Style.primaryColor,
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(Style.height_10(context)))),
+                        width: 1,
+                        color: Style.primaryColor,
+                        borderRadius:
+                            BorderRadius.circular(Style.height_10(context)),
+                      ),
                       children: [
+                        // HEADER
                         TableRow(
                           decoration: BoxDecoration(
-                              color: Style.primaryColor,
-                              borderRadius: BorderRadius.only(
-                                topLeft:
-                                    Radius.circular(Style.height_10(context)),
-                                topRight:
-                                    Radius.circular(Style.height_10(context)),
-                              )),
+                            color: Style.primaryColor,
+                            borderRadius: BorderRadius.only(
+                              topLeft:
+                                  Radius.circular(Style.height_10(context)),
+                              topRight:
+                                  Radius.circular(Style.height_10(context)),
+                            ),
+                          ),
                           children: [
-                            Container(
-                              padding: EdgeInsets.only(
-                                top: Style.height_10(context),
-                                bottom: Style.height_10(context),
-                              ),
-                              child: Text(
-                                'Cód.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Style.tertiaryColor,
-                                  fontSize: Style.height_8(context),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                softWrap: true,
-                                overflow: TextOverflow.clip,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(
-                                top: Style.height_10(context),
-                                bottom: Style.height_10(context),
-                              ),
-                              child: Text(
-                                'Nome',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Style.tertiaryColor,
-                                  fontSize: Style.height_8(context),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                softWrap: true,
-                                overflow: TextOverflow.clip,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(
-                                top: Style.height_10(context),
-                                bottom: Style.height_10(context),
-                              ),
-                              child: Text(
-                                'Qtde.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Style.tertiaryColor,
-                                  fontSize: Style.height_8(context),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                softWrap: true,
-                                overflow: TextOverflow.clip,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(
-                                top: Style.height_10(context),
-                                bottom: Style.height_10(context),
-                              ),
-                              child: Text(
-                                'Exp.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Style.tertiaryColor,
-                                  fontSize: Style.height_8(context),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                softWrap: true,
-                                overflow: TextOverflow.clip,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(
-                                top: Style.height_10(context),
-                                bottom: Style.height_10(context),
-                              ),
-                              child: Text(
-                                'Desc.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Style.tertiaryColor,
-                                  fontSize: Style.height_8(context),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                softWrap: true,
-                                overflow: TextOverflow.clip,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(
-                                top: Style.height_10(context),
-                                bottom: Style.height_10(context),
-                              ),
-                              child: Text(
-                                'Valor',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Style.tertiaryColor,
-                                  fontSize: Style.height_8(context),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                softWrap: true,
-                                overflow: TextOverflow.clip,
-                              ),
-                            ),
+                            _headerCell('Cód.'),
+                            _headerCell('Nome'),
+                            _headerCell('Qtde.'),
+                            _headerCell('Exp.'),
+                            _headerCell('Desc.'),
+                            _headerCell('Valor'),
                           ],
                         ),
-                        TableRow(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(
-                                top: Style.height_10(context),
-                                bottom: Style.height_10(context),
-                              ),
-                              child: Text(
-                                '',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: Style.height_8(context)),
-                                softWrap: true,
-                                overflow: TextOverflow.clip,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(
-                                top: Style.height_10(context),
-                                bottom: Style.height_10(context),
-                              ),
-                              child: Text(
-                                '',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: Style.height_8(context)),
-                                softWrap: true,
-                                overflow: TextOverflow.clip,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(
-                                top: Style.height_10(context),
-                                bottom: Style.height_10(context),
-                              ),
-                              child: Text(
-                                '',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: Style.height_8(context)),
-                                softWrap: true,
-                                overflow: TextOverflow.clip,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(
-                                top: Style.height_10(context),
-                                bottom: Style.height_10(context),
-                              ),
-                              child: Text(
-                                '',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: Style.height_8(context)),
-                                softWrap: true,
-                                overflow: TextOverflow.clip,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(
-                                top: Style.height_10(context),
-                                bottom: Style.height_10(context),
-                              ),
-                              child: Text(
-                                '',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: Style.height_8(context)),
-                                softWrap: true,
-                                overflow: TextOverflow.clip,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(
-                                top: Style.height_10(context),
-                                bottom: Style.height_10(context),
-                              ),
-                              child: Text(
-                                '',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: Style.height_8(context)),
-                                softWrap: true,
-                                overflow: TextOverflow.clip,
-                              ),
-                            ),
-                          ],
-                        ),
+
+                        // LINHAS DINÂMICAS
+                        ...saleDetails.map((item) {
+                          return TableRow(
+                            children: [
+                              _cell(item.codigoproduto.toString()),
+                              _cell(item.nomeproduto.toString()),
+                              _cell(item.quantidadeproduto.toString()),
+                              _cell(item.expedicao.toString()),
+                              _cell(currencyFormatDefault
+                                  .format(item.valordescontoitem)
+                                  .toString()),
+                              _cell(currencyFormatDefault
+                                  .format(item.valortotalitem)
+                                  .toString()),
+                            ],
+                          );
+                        }).toList(),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
-            onWillPop: () async {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => SaleListPage(),
-                ),
-              );
-              return true;
-            }));
+           ));
+  }
+
+  Future<void> _loadSavedSellerId() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String savedVendedorId =
+        await sharedPreferences.getString('vendedor_id') ?? '';
+    setState(() {
+      pessoa_id = savedVendedorId;
+    });
+  }
+
+  Future<void> _loadSavedUrlBasic() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String savedUrlBasic = await sharedPreferences.getString('urlBasic') ?? '';
+    setState(() {
+      urlBasic = savedUrlBasic;
+    });
+  }
+
+  Future<void> fetchDataSaleDetails() async {
+    final fetchData = await DataServiceSaleDetails.fetchDataSaleDetails(
+        urlBasic, widget.movimentosaidaId);
+    if (fetchData != null) {
+      setState(() {
+        saleDetails = fetchData.salesDetails ?? [];
+        salesPayments = fetchData.salesPayments ?? [];
+        codigopessoa = fetchData.codigopessoa.toString();
+        nomepessoa = fetchData.nomepessoa.toString();
+        empresaCodigo = fetchData.empresacodigo.toString();
+        empresaNome = fetchData.empresanome.toString();
+        numeroPedido = fetchData.numero.toString();
+        numeromovimento = fetchData.numeromovimento.toString();
+        terminal = fetchData.terminal.toString();
+        valortotalmovimento = fetchData.valortotalmovimento ?? 0.0;
+        valorsubtotal = fetchData.valortotalprodutos ?? 0.0;
+        outrasdespesas = fetchData.valoroutrasdespesas ?? 0.0;
+        valordesconto = fetchData.valordescontomovimento ?? 0.0;
+        valorfrete = fetchData.valorfrete ?? 0.0;
+        margem = fetchData.margem ?? 0.0;
+      });
+    }
+    print(saleDetails!.first.codigopessoa);
+  }
+
+  Future<void> loadData() async {
+    await Future.wait([_loadSavedUrlBasic(), _loadSavedSellerId()]);
+    await Future.wait([fetchDataSaleDetails()]);
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Widget _headerCell(String text) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Style.tertiaryColor,
+          fontSize: Style.height_8(context),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget _cell(String text) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: Style.height_8(context)),
+        softWrap: true,
+        overflow: TextOverflow.clip,
+      ),
+    );
   }
 }

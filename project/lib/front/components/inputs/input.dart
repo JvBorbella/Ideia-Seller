@@ -16,6 +16,7 @@ class Input extends StatefulWidget {
   final TextInputAction? textInputAction;
   final List<TextInputFormatter>? inputFormatters;
   final onTap;
+  final onSubmitted;
 
   const Input(
       {super.key,
@@ -28,7 +29,8 @@ class Input extends StatefulWidget {
       // required this.textAlign,
       this.textInputAction,
       this.inputFormatters,
-      this.onTap});
+      this.onTap,
+      this.onSubmitted,});
 
   @override
   State<Input> createState() => _InputState();
@@ -62,11 +64,11 @@ class _InputState extends State<Input> {
                 style: TextStyle(
                     fontSize: Style.height_12(context),
                     fontFamily: 'Poppins-Regular'),
-                onSubmitted: (value) {
+                keyboardType: widget.type,
+                onSubmitted: widget.onSubmitted != null ? widget.onSubmitted : (value) {
                   FocusScope.of(context)
                       .nextFocus(); // Avança para o próximo campo ao pressionar Enter
                 },
-                keyboardType: widget.type,
                 // textAlign: widget.textAlign,
                 obscureText: widget.obscureText ?? false,
                 cursorColor: Style.primaryColor,

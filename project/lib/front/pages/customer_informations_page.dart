@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:project/back/customer_base/customer_detail.dart';
 import 'package:project/front/components/buttons/drawer_button.dart';
 import 'package:project/front/components/structure/informative_card.dart';
 import 'package:project/front/components/structure/navbar.dart';
 import 'package:project/front/components/texts/text_card.dart';
 import 'package:project/front/components/texts/titles.dart';
 import 'package:project/front/pages/customer_portifolio_page.dart';
+import 'package:project/front/pages/sale_details_page.dart';
 import 'package:project/front/style/style.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomerInformations extends StatefulWidget {
-  const CustomerInformations({super.key});
+  final customerId;
+  const CustomerInformations({super.key, required this.customerId});
 
   @override
   State<CustomerInformations> createState() => _CustomerInformationsState();
@@ -16,14 +21,57 @@ class CustomerInformations extends StatefulWidget {
 
 class _CustomerInformationsState extends State<CustomerInformations> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadData();
+  }
+
+  NumberFormat currencyFormatDefault =
+      NumberFormat.currency(locale: 'pt_BR', symbol: '');
+
+  String codigo = '', nome = '';
+  dynamic data_ultima_venda,
+      data_ultimo_pagamento,
+      valor_total_vendas,
+      valor_total_devolucoes,
+      valor_total_credito,
+      qtde_vencido,
+      valor_vencido,
+      valor_a_vencer,
+      valor_devedor,
+      limitecredito;
+
+  @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Scaffold(
+        body: Center(
+          child: Container(
+              height: Style.CircularProgressIndicatorWidth(context),
+              width: Style.CircularProgressIndicatorWidth(context),
+              child: CircularProgressIndicator(
+                year2023: false,
+                strokeWidth: Style.CircularProgressIndicatorSize(context),
+              )),
+        ),
+      );
+    }
     return SafeArea(
-        child: WillPopScope(
-            child: Scaffold(
+        child: PopScope(
+        canPop: false, // 🔴 IMPORTANTE
+        onPopInvokedWithResult: (didPop, result) async {
+          Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => CustomerPortifolioPage(),
+                ),
+              );
+        },
+      child: Scaffold(
               drawer: CustomDrawer(),
               body: ListView(
                 children: [
-                  Navbar(text: 'Detalhes da Venda', children: [
+                  Navbar(text: 'Informações do cliente', children: [
                     DrawerButton(
                       style: ButtonStyle(
                           iconSize: WidgetStatePropertyAll(
@@ -46,7 +94,7 @@ class _CustomerInformationsState extends State<CustomerInformations> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Titles(
-                            text: '(CÓDIGO) - (NOME DO CLIENTE)',
+                            text: '${codigo} - ${nome}',
                             fontSize: Titles.h3(context)),
                         SizedBox(
                           height: Style.height_10(context),
@@ -58,12 +106,12 @@ class _CustomerInformationsState extends State<CustomerInformations> {
                               children: [
                                 TextCard(
                                   text: 'Venda',
-                                  fontSize: Style.height_7(context),
+                                  fontSize: Style.height_8(context),
                                   color: Style.quarantineColor,
                                   FontWeight: FontWeight.bold,
                                 ),
                                 TextCard(
-                                  text: '000.000,00',
+                                  text: currencyFormatDefault.format(valor_total_vendas ?? 0.0),
                                   fontSize: Style.height_10(context),
                                   color: Style.primaryColor,
                                 ),
@@ -73,12 +121,12 @@ class _CustomerInformationsState extends State<CustomerInformations> {
                               children: [
                                 TextCard(
                                   text: 'Devolução',
-                                  fontSize: Style.height_7(context),
+                                  fontSize: Style.height_8(context),
                                   color: Style.quarantineColor,
                                   FontWeight: FontWeight.bold,
                                 ),
                                 TextCard(
-                                  text: '000.000,00',
+                                  text: currencyFormatDefault.format(valor_total_devolucoes ?? 0.0),
                                   fontSize: Style.height_10(context),
                                   color: Style.primaryColor,
                                 ),
@@ -87,15 +135,21 @@ class _CustomerInformationsState extends State<CustomerInformations> {
                             Column(
                               children: [
                                 TextCard(
-                                  text: 'Crédito',
-                                  fontSize: Style.height_7(context),
+                                  text: 'Crédito / Limite',
+                                  fontSize: Style.height_8(context),
                                   color: Style.quarantineColor,
                                   FontWeight: FontWeight.bold,
                                 ),
                                 TextCard(
-                                  text: '000.000,00',
+                                  text: currencyFormatDefault.format(valor_total_credito ?? 0.0),
                                   fontSize: Style.height_10(context),
                                   color: Style.primaryColor,
+                                ),
+                                TextCard(
+                                  text: currencyFormatDefault.format(limitecredito ?? 0.0),
+                                  fontSize: Style.height_10(context),
+                                  FontWeight: FontWeight.bold,
+                                  color: Style.warningColor,
                                 ),
                               ],
                             ),
@@ -216,6 +270,23 @@ class _CustomerInformationsState extends State<CustomerInformations> {
                                 overflow: TextOverflow.clip,
                               ),
                             ),
+                            Container(
+                              padding: EdgeInsets.only(
+                                top: Style.height_10(context),
+                                bottom: Style.height_10(context),
+                              ),
+                              child: Text(
+                                'Devendo',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Style.tertiaryColor,
+                                  fontSize: Style.height_8(context),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                softWrap: true,
+                                overflow: TextOverflow.clip,
+                              ),
+                            ),
                           ],
                         ),
                         TableRow(
@@ -226,7 +297,7 @@ class _CustomerInformationsState extends State<CustomerInformations> {
                                 bottom: Style.height_10(context),
                               ),
                               child: Text(
-                                '',
+                                qtde_vencido.toString(),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: Style.height_8(context)),
@@ -240,7 +311,7 @@ class _CustomerInformationsState extends State<CustomerInformations> {
                                 bottom: Style.height_10(context),
                               ),
                               child: Text(
-                                '',
+                                currencyFormatDefault.format(valor_a_vencer ?? 0.0),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: Style.height_8(context)),
@@ -254,7 +325,21 @@ class _CustomerInformationsState extends State<CustomerInformations> {
                                 bottom: Style.height_10(context),
                               ),
                               child: Text(
-                                '',
+                                currencyFormatDefault.format(valor_vencido ?? 0.0),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: Style.height_8(context)),
+                                softWrap: true,
+                                overflow: TextOverflow.clip,
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(
+                                top: Style.height_10(context),
+                                bottom: Style.height_10(context),
+                              ),
+                              child: Text(
+                                currencyFormatDefault.format(valor_devedor ?? 0.0),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: Style.height_8(context)),
@@ -378,7 +463,8 @@ class _CustomerInformationsState extends State<CustomerInformations> {
                                 bottom: Style.height_10(context),
                               ),
                               child: Text(
-                                '',
+                                data_ultimo_pagamento == null ? 'Sem pagamento' :
+                                DateFormat('dd/MM/yyyy').format(data_ultimo_pagamento).toString(),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: Style.height_8(context)),
@@ -392,7 +478,8 @@ class _CustomerInformationsState extends State<CustomerInformations> {
                                 bottom: Style.height_10(context),
                               ),
                               child: Text(
-                                '',
+                                data_ultima_venda == null ? 'Sem vendas' :
+                                DateFormat('dd/MM/yyyy').format(data_ultima_venda).toString(),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: Style.height_8(context)),
@@ -407,7 +494,7 @@ class _CustomerInformationsState extends State<CustomerInformations> {
                                 ),
                                 child: Icon(
                                   Icons.error,
-                                  color: Style.errorColor,
+                                  color: data_ultima_venda != null && DateTime.now().difference(data_ultima_venda).inDays >= 30 ? Style.errorColor : Style.tertiaryColor,
                                   size: Style.height_15(context),
                                 )),
                           ],
@@ -418,13 +505,43 @@ class _CustomerInformationsState extends State<CustomerInformations> {
                 ],
               ),
             ),
-            onWillPop: () async {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => CustomerPortifolioPage(),
-                ),
-              );
-              return true;
-            }));
+           ));
+  }
+
+  Future<void> _loadSavedUrlBasic() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String savedUrlBasic = await sharedPreferences.getString('urlBasic') ?? '';
+    setState(() {
+      urlBasic = savedUrlBasic;
+    });
+  }
+
+  Future<void> loadData() async {
+    await Future.wait([_loadSavedUrlBasic()]);
+    await Future.wait([fetchDataCustomerDetail()]);
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> fetchDataCustomerDetail() async {
+    final fetchData = await DataServiceCustomerDetail.fetchDataCustomerDetail(
+        urlBasic, widget.customerId);
+    if (fetchData != null) {
+      setState(() {
+        codigo = fetchData.codigo;
+        nome = fetchData.nome;
+        data_ultima_venda = fetchData.data_ultima_venda;
+        data_ultimo_pagamento = fetchData.data_ultimo_pagamento;
+        valor_total_vendas = fetchData.valor_total_vendas;
+        valor_total_devolucoes = fetchData.valor_total_devolucoes;
+        valor_total_credito = fetchData.valor_total_credito;
+        qtde_vencido = fetchData.qtde_vencido;
+        valor_vencido = fetchData.valor_vencido;
+        valor_a_vencer = fetchData.valor_a_vencer;
+        valor_devedor = fetchData.valor_devedor;
+        limitecredito = fetchData.limitecredito;
+      });
+    }
   }
 }

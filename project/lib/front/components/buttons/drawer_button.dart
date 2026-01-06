@@ -1,4 +1,6 @@
+import 'package:card_loading/card_loading.dart';
 import 'package:flutter/material.dart';
+import 'package:project/back/company/company_infos.dart';
 import 'package:project/back/seller_monitor/seller_monitor_data.dart';
 import 'package:project/front/components/buttons/modal_button.dart';
 import 'package:project/front/pages/customer_portifolio_page.dart';
@@ -47,18 +49,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
   late int clientes_adimplentes = 0;
   late int clientes_restantes = 0;
 
+  List<CompanyList> company = [];
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // _loadSavedUrl();
-    // _loadSavedToken();
-    // _loadSavedLogin();
-    // _loadSavedImage();
-    // _loadSavedUrlBasic();
-    // _loadSavedEmail();
-    // _loadSavedFlagNotify();
-    // _loadSavedUser;
-    // fetchDataSellerMonitor();
     loadData();
   }
 
@@ -128,7 +123,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                                         FilterQuality.high,
                                                   )
                                                 : Image.network(
-                                                    imagem,
+                                                    '$urlBasic$imagem',
                                                     alignment:
                                                         Alignment.topCenter,
                                                     fit: BoxFit.cover,
@@ -160,25 +155,40 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                           ),
                                         ],
                                       ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            //'${empresa_codigo} - ${empresa_nome}',
-                                            'E1 - Empresa Fictícia',
-                                            style: TextStyle(
-                                              fontFamily: 'Poppins-Regular',
-                                              fontSize:
-                                                  Style.height_12(context),
-                                              color: Style.tertiaryColor,
+                                      if (empresa_codigo.isEmpty)
+                                        SizedBox(
+                                          width: Style.height_80(context),
+                                          child: CardLoading(
+                                            cardLoadingTheme: CardLoadingTheme(
+                                              colorOne: const Color.fromARGB(
+                                                  255, 3, 99, 163),
+                                              colorTwo: const Color.fromARGB(
+                                                  255, 1, 61, 100),
                                             ),
+                                            height: Style.height_20(context),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(10)),
                                           ),
-                                        ],
-                                      ),
+                                        )
+                                      else
+                                        Row(
+                                          children: [
+                                            Text(
+                                              '${empresa_codigo} - ${empresa_nome}',
+                                              style: TextStyle(
+                                                fontFamily: 'Poppins-Regular',
+                                                fontSize:
+                                                    Style.height_12(context),
+                                                color: Style.tertiaryColor,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       Row(
                                         children: [
                                           Text(
-                                            //email,
-                                            'suporte@ideiatecnologia.com.br',
+                                            email,
                                             style: TextStyle(
                                               fontFamily: 'Poppins-Regular',
                                               fontSize:
@@ -355,7 +365,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                                               MaterialPageRoute(
                                                                 builder:
                                                                     (context) =>
-                                                                        SaleMonitor(vendedorpessoa_id: pessoa_id,),
+                                                                        SaleMonitor(
+                                                                  vendedorpessoa_id:
+                                                                      pessoa_id,
+                                                                ),
                                                               ),
                                                             );
                                                           },
@@ -508,6 +521,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
     });
   }
 
+  Future<void> _loadSavedSellerId() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String savedVendedorId =
+        await sharedPreferences.getString('vendedor_id') ?? '';
+    setState(() {
+      pessoa_id = savedVendedorId;
+    });
+  }
+
   Future<void> _loadSavedToken() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String savedToken = await sharedPreferences.getString('token') ?? '';
@@ -537,7 +559,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String savedImage = await sharedPreferences.getString('image') ?? '';
     setState(() {
-      image = savedImage;
+      imagem = savedImage;
     });
   }
 
@@ -565,34 +587,56 @@ class _CustomDrawerState extends State<CustomDrawer> {
     });
   }
 
-  Future<void> fetchDataSellerMonitor() async {
-    Map<String?, dynamic?> fetchedData =
-        await DataServiceSellerMonitor.fetchDataSellerMonitor(
-            usuario, urlBasic);
+  Future<void> _loadSavedCompanyId() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String savedCompanyId =
+        await sharedPreferences.getString('empresa_id') ?? '';
     setState(() {
-      pessoa_id = fetchedData['pessoa_id'] ?? '';
-      codigo = fetchedData['codigo'] ?? '';
-      nome = fetchedData['nome'] ?? '';
-      email = fetchedData['email'] ?? '';
-      empresa_id = fetchedData['empresa_id'] ?? '';
-      empresa_codigo = fetchedData['empresa_codigo'] ?? '';
-      empresa_nome = fetchedData['empresa_nome'] ?? '';
-      imagem = fetchedData['imagem'] ?? '';
-      vendashoje = fetchedData['vendashoje'] ?? 0.0;
-      vendasontem = fetchedData['vendasontem'] ?? 0.0;
-      vendassemana = fetchedData['vendassemana'] ?? 0.0;
-      vendasmes = fetchedData['vendasmes'] ?? 0.0;
-      vendasmesanterior = fetchedData['vendasmesanterior'] ?? 0.0;
-      clientes_inadimplentes = fetchedData['clientes_inadimplentes'] ?? 0;
-      clientes_adimplentes = fetchedData['clientes_adimplentes'] ?? 0;
-      clientes_restantes = fetchedData['clientes_restantes'] ?? 0;
+      empresa_id = savedCompanyId;
+    });
+  }
+  Future<void> _loadSavedCompanyCode() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String savedCompanyCode =
+        await sharedPreferences.getString('empresa_codigo') ?? '';
+    setState(() {
+      empresa_codigo = savedCompanyCode;
+    });
+  }
+  Future<void> _loadSavedCompanyName() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String savedCompanyName =
+        await sharedPreferences.getString('empresa_nome') ?? '';
+    setState(() {
+      empresa_nome = savedCompanyName;
     });
   }
 
+  // Future<void> fetchDataCompany({bool? ascending}) async {
+  //   List<CompanyList>? fetchedData = await DataServiceCompany.fetchDataCompany(
+  //     context,
+  //     urlBasic,
+  //     empresa_id,
+  //   );
+
+  //   if (fetchedData != null) {
+  //     setState(() {
+  //       company = fetchedData;
+  //     });
+  //     if (empresa_id.isNotEmpty) {
+  //       setState(() {
+  //         empresa_nome = company.first.empresa_nome.toString();
+  //         empresa_codigo = company.first.empresa_codigo.toString();
+  //       });
+  //     }
+  //   }
+  // }
+
   Future<void> loadData() async {
-    await Future.wait([_loadSavedUrlBasic()]);
-    await Future.wait([_loadSavedUser()]);
+    await Future.wait(
+        [_loadSavedUrlBasic(), _loadSavedSellerId(), _loadSavedCompanyId(), _loadSavedCompanyCode(), _loadSavedCompanyName()]);
+    await Future.wait([_loadSavedUser(), _loadSavedImage(), _loadSavedEmail()]);
     await Future.wait([_loadSavedLogin()]);
-    //await Future.wait([fetchDataSellerMonitor()]);
+    //await Future.wait([fetchDataCompany()]);
   }
 }

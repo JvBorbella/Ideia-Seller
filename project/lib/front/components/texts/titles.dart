@@ -6,14 +6,15 @@ class Titles extends StatefulWidget {
   final double fontSize;
   final color;
   final FontWeight;
+  final textAlign;
 
-  const Titles({
-    super.key,
-    required this.text,
-    required this.fontSize,
-    this.color,
-    this.FontWeight
-  });
+  const Titles(
+      {super.key,
+      required this.text,
+      required this.fontSize,
+      this.color,
+      this.FontWeight,
+      this.textAlign});
 
   static double h1(BuildContext context) {
     return MediaQuery.of(context).size.height * 0.0384;
@@ -40,12 +41,12 @@ class _TitlesState extends State<Titles> {
   Widget build(BuildContext context) {
     return Text(
       widget.text,
+      overflow: TextOverflow.ellipsis,
       style: TextStyle(
-        color: widget.color != null ? widget.color : Style.primaryColor,
-        fontSize: widget.fontSize,
-        fontWeight: widget.FontWeight
-      ),
-      textAlign: TextAlign.center,
+          color: widget.color != null ? widget.color : Style.primaryColor,
+          fontSize: widget.fontSize,
+          fontWeight: widget.FontWeight),
+      textAlign: widget.textAlign ?? TextAlign.center,
     );
   }
 }

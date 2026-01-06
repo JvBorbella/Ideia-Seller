@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:project/Front/style/style.dart';
+import 'package:project/back/company/company_infos.dart';
 import 'package:project/front/pages/seller_monitor_page.dart';
 import 'package:project/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,6 +32,11 @@ class LoginFunction {
       var authorization = Uri.parse('$url/ideia/secure/login');
       //authorization: define a url que fará a requisição post ao servidor.
 
+      var pessoaId = '';
+      var codigo = '';
+      var nome = '';
+      var imagem = '';
+
       print(authorization);
 
       //response: variável definida para receber a resposta da requisição post do servidor.
@@ -50,6 +56,7 @@ class LoginFunction {
         if (responseBody['success'] == true) {
           var token = responseBody['data']['token'];
           var login = responseBody['data']['login'];
+          var usuarioId = responseBody['data']['id'];
           var image = responseBody['data']['image'];
           var email = responseBody['data']['email'];
           var empresaid = responseBody['data']['empresa_id'] ?? '';
@@ -64,10 +71,64 @@ class LoginFunction {
           await sharedPreferences.setString('empresa_id', empresaid);
           print(token);
 
+          try {
+            var urlSeller = Uri.parse(
+                '''$url/ideia/core/getdata/pessoa%20p%20LEFT%20JOIN%20usuario%20u%20ON%20u.pessoa_id%20=%20p.pessoa_id%20WHERE%20u.usuario_id%20=%20'$usuarioId'/''');
+            var headers = ({"Accept": "text/html"});
+            var response = await http.get(urlSeller, headers: headers);
+            if (response.statusCode == 200) {
+              var data = jsonDecode(response.body);
+              var dynamicKey = data['data'].keys.first;
+              // pega a lista de registros
+              List<dynamic> list = data['data'][dynamicKey];
+              Map<String, dynamic> vendedor = list.first;
+              print(data['data'][dynamicKey][0]['codigo']?.toString() ?? '');
+              var vendedorId = vendedor['pessoa_id']?.toString() ?? '';
+              var codigoVendedor = vendedor['codigo']?.toString() ?? '';
+              var nomeVendedor = vendedor['nome']?.toString() ?? '';
+              var imagemVendedor = vendedor['imagem_url']?.toString() ?? '';
+              var email = vendedor['email'];
+              var empresaid = vendedor['empresa_id'] ?? '';
+
+              SharedPreferences sharedPreferences =
+                  await SharedPreferences.getInstance();
+              await sharedPreferences.setString('vendedor_id', vendedorId);
+              await sharedPreferences.setString('codigo', codigoVendedor);
+              await sharedPreferences.setString('nome', nomeVendedor);
+              await sharedPreferences.setString('email', email);
+              await sharedPreferences.setString('empresa_id', empresaid);
+
+              pessoaId = vendedorId ?? '';
+              codigo = codigoVendedor ?? '';
+              nome = nomeVendedor ?? '';
+              imagem = imagemVendedor ?? '';
+
+            } else {
+              print('Problema na requisição: ${response.body}');
+            }
+          } catch (e) {
+            print(
+                'Erro durante a requisição do vendedor a partir do login: $e');
+          }
+
+          final fetchdata = await DataServiceCompany.fetchDataCompany(
+                  context, url, empresaid);
+              print(fetchdata!.first.empresa_codigo);
+              await sharedPreferences.setString(
+                  'empresa_codigo', fetchdata!.first.empresa_codigo ?? '');
+              await sharedPreferences.setString(
+                  'empresa_nome', fetchdata.first.empresa_nome ?? '');
+
 // Navegue para a HomePage
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => SellerMonitorPage(userController: userController.text)),
+            MaterialPageRoute(
+                builder: (context) => SellerMonitorPage(
+                    userController: userController.text,
+                    vendedorId: pessoaId,
+                    codigo: codigo,
+                    nome: nome,
+                    imagemUrl: imagem)),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(

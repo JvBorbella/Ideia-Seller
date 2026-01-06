@@ -5,6 +5,7 @@ import 'package:project/front/components/buttons/action_button.dart';
 import 'package:project/front/components/buttons/simple_button.dart';
 import 'package:project/front/components/inputs/input.dart';
 import 'package:project/front/components/structure/form_card.dart';
+import 'package:project/front/pages/sale_details_page.dart';
 import 'package:project/front/style/style.dart';
 import 'package:project/front/components/structure/navbar.dart';
 import 'package:project/front/pages/config_page.dart';
@@ -106,7 +107,15 @@ class _LoginPageState extends State<LoginPage> {
                                 type: TextInputType.text,
                                 obscureText: true,
                                 controller: _passwordController,
-                                // textInputAction: TextInputAction.done,
+                                onSubmitted: (value) async {
+                                  await LoginFunction.login(
+                                    context,
+                                    url,
+                                    _userController,
+                                    _passwordController,
+                                  );
+                                },
+                                textInputAction: TextInputAction.go,
                               ),
                               SizedBox(
                                 height: Style.InputToButtonSpace(context),

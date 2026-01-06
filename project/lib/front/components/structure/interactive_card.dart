@@ -32,7 +32,14 @@ class _InteractiveCardState extends State<InteractiveCard> {
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
-                Container(
+                GestureDetector(
+                  onTap: () {
+                          if (widget.onPressed != null) {
+                            widget.onPressed();
+                          }
+                        },
+                  child: Container(
+                    height: Style.height_30(context),
                   width: Style.height_350(context),
                   decoration: BoxDecoration(
                       color: Style.primaryColor,
@@ -43,20 +50,7 @@ class _InteractiveCardState extends State<InteractiveCard> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      TextButton(
-                        //Padding 0 para deixar o button alinhado com o card
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                        ),
-                        onPressed: () {
-                          if (widget.onPressed != null) {
-                            widget.onPressed();
-                          }
-                        },
-                        //Aparência do button
-                        child: Container(
-                          decoration: BoxDecoration(),
-                          child: Text(
+                      Text(
                             //Texto do button está sendo definido na página home.Dart
                             widget.Text,
                             style: TextStyle(
@@ -65,8 +59,6 @@ class _InteractiveCardState extends State<InteractiveCard> {
                                 color: Style.tertiaryColor),
                             textAlign: TextAlign.center,
                           ),
-                        ),
-                      ),
                       Icon(
                         widget.icon,
                         color: Style.tertiaryColor,
@@ -74,6 +66,7 @@ class _InteractiveCardState extends State<InteractiveCard> {
                       )
                     ],
                   ),
+                ),
                 ),
                 Container(
                   width: Style.height_350(context),
