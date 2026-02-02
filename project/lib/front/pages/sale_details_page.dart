@@ -110,7 +110,6 @@ class _SaleDetailsState extends State<SaleDetails> {
                             ),
                             textAlign: TextAlign.start,),
                             Container(
-                              width: Style.width_320(context),
                               child: Titles(
                             text: '${codigopessoa} - ${nomepessoa}',
                             textAlign: TextAlign.start,
@@ -128,7 +127,6 @@ class _SaleDetailsState extends State<SaleDetails> {
                             ),
                             textAlign: TextAlign.start,),
                             Container(
-                              width: Style.width_320(context),
                               child: Titles(
                             text: '${empresaCodigo} - ${empresaNome}',
                             textAlign: TextAlign.start,
@@ -146,7 +144,6 @@ class _SaleDetailsState extends State<SaleDetails> {
                             ),
                             textAlign: TextAlign.start,),
                             Container(
-                              width: Style.width_320(context),
                               child: Titles(
                             text: '${numeroPedido}',
                             textAlign: TextAlign.start,
@@ -164,7 +161,6 @@ class _SaleDetailsState extends State<SaleDetails> {
                             ),
                             textAlign: TextAlign.start,),
                             Container(
-                              width: Style.width_320(context),
                               child: Titles(
                             text: '${numeromovimento}',
                             textAlign: TextAlign.start,
@@ -182,7 +178,6 @@ class _SaleDetailsState extends State<SaleDetails> {
                             ),
                             textAlign: TextAlign.start,),
                             Container(
-                              width: Style.width_320(context),
                               child: Titles(
                             text: '${terminal}',
                             textAlign: TextAlign.start,

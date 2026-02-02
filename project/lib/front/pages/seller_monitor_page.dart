@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:card_loading/card_loading.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -87,13 +88,15 @@ class SellerMonitorPageState extends State<SellerMonitorPage> {
   late int clientes_adimplentes = 0;
   late int clientes_restantes = 0;
 
-  bool isLoading = true;
+  bool isLoading = true,
+      loadingDataValues = true,
+      loadingDataCustomers = true,
+      loadingDataObjectives = true;
 
   NumberFormat currencyFormat =
-      NumberFormat.currency(locale: 'pt_BR', symbol: '');
-
-  NumberFormat currencyFormatDefault =
-      NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
+          NumberFormat.currency(locale: 'pt_BR', symbol: ''),
+      currencyFormatDefault =
+          NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
 
   List<GetSales> sales = [];
 
@@ -125,10 +128,7 @@ class SellerMonitorPageState extends State<SellerMonitorPage> {
     return SafeArea(
         child: WillPopScope(
             child: Scaffold(
-                drawer: Drawer(
-                  child: CustomDrawer(),
-                  width: MediaQuery.of(context).size.width * 0.9,
-                ),
+                drawer: CustomDrawer(),
                 body: RefreshIndicator(
                     onRefresh: () => _refreshData(),
                     strokeWidth: Style.CircularProgressIndicatorSize(context),
@@ -265,46 +265,56 @@ class SellerMonitorPageState extends State<SellerMonitorPage> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    TextCard(
-                                      text: currencyFormat
-                                          .format(todayValue)
-                                          .toString(),
-                                      fontSize: Style.height_12(context),
-                                      textAlign: TextAlign.right,
-                                      FontWeight: FontWeight.bold,
-                                    ),
-                                    TextCard(
-                                      text: currencyFormat
-                                          .format(yesterdayValue)
-                                          .toString(),
-                                      fontSize: Style.height_12(context),
-                                      textAlign: TextAlign.right,
-                                      FontWeight: FontWeight.bold,
-                                    ),
-                                    TextCard(
-                                      text: currencyFormat
-                                          .format(weekValue)
-                                          .toString(),
-                                      fontSize: Style.height_12(context),
-                                      textAlign: TextAlign.right,
-                                      FontWeight: FontWeight.bold,
-                                    ),
-                                    TextCard(
-                                      text: currencyFormat
-                                          .format(monthValue)
-                                          .toString(),
-                                      fontSize: Style.height_12(context),
-                                      textAlign: TextAlign.right,
-                                      FontWeight: FontWeight.bold,
-                                    ),
-                                    TextCard(
-                                      text: currencyFormat
-                                          .format(prevMonthValue)
-                                          .toString(),
-                                      fontSize: Style.height_12(context),
-                                      textAlign: TextAlign.right,
-                                      FontWeight: FontWeight.bold,
-                                    ),
+                                    verifyLoading(
+                                        flagLoad: loadingDataValues,
+                                        child: TextCard(
+                                          text: currencyFormat
+                                              .format(todayValue)
+                                              .toString(),
+                                          fontSize: Style.height_12(context),
+                                          textAlign: TextAlign.right,
+                                          FontWeight: FontWeight.bold,
+                                        )),
+                                    verifyLoading(
+                                        flagLoad: loadingDataValues,
+                                        child: TextCard(
+                                          text: currencyFormat
+                                              .format(yesterdayValue)
+                                              .toString(),
+                                          fontSize: Style.height_12(context),
+                                          textAlign: TextAlign.right,
+                                          FontWeight: FontWeight.bold,
+                                        )),
+                                    verifyLoading(
+                                        flagLoad: loadingDataValues,
+                                        child: TextCard(
+                                          text: currencyFormat
+                                              .format(weekValue)
+                                              .toString(),
+                                          fontSize: Style.height_12(context),
+                                          textAlign: TextAlign.right,
+                                          FontWeight: FontWeight.bold,
+                                        )),
+                                    verifyLoading(
+                                        flagLoad: loadingDataValues,
+                                        child: TextCard(
+                                          text: currencyFormat
+                                              .format(monthValue)
+                                              .toString(),
+                                          fontSize: Style.height_12(context),
+                                          textAlign: TextAlign.right,
+                                          FontWeight: FontWeight.bold,
+                                        )),
+                                    verifyLoading(
+                                        flagLoad: loadingDataValues,
+                                        child: TextCard(
+                                          text: currencyFormat
+                                              .format(prevMonthValue)
+                                              .toString(),
+                                          fontSize: Style.height_12(context),
+                                          textAlign: TextAlign.right,
+                                          FontWeight: FontWeight.bold,
+                                        )),
                                   ],
                                 ),
                               ],
@@ -361,21 +371,27 @@ class SellerMonitorPageState extends State<SellerMonitorPage> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    TextCard(
-                                      text: defaulters.toString(),
-                                      fontSize: Style.height_12(context),
-                                      FontWeight: FontWeight.bold,
-                                    ),
-                                    TextCard(
-                                      text: nonCompliant.toString(),
-                                      fontSize: Style.height_12(context),
-                                      FontWeight: FontWeight.bold,
-                                    ),
-                                    TextCard(
-                                      text: open.toString(),
-                                      fontSize: Style.height_12(context),
-                                      FontWeight: FontWeight.bold,
-                                    ),
+                                    verifyLoading(
+                                        flagLoad: loadingDataCustomers,
+                                        child: TextCard(
+                                          text: defaulters.toString(),
+                                          fontSize: Style.height_12(context),
+                                          FontWeight: FontWeight.bold,
+                                        )),
+                                    verifyLoading(
+                                        flagLoad: loadingDataCustomers,
+                                        child: TextCard(
+                                          text: nonCompliant.toString(),
+                                          fontSize: Style.height_12(context),
+                                          FontWeight: FontWeight.bold,
+                                        )),
+                                    verifyLoading(
+                                        flagLoad: loadingDataCustomers,
+                                        child: TextCard(
+                                          text: open.toString(),
+                                          fontSize: Style.height_12(context),
+                                          FontWeight: FontWeight.bold,
+                                        )),
                                   ],
                                 ),
                               ],
@@ -396,105 +412,78 @@ class SellerMonitorPageState extends State<SellerMonitorPage> {
                         ),
                         InteractiveCard(
                           children: [
-                            FutureBuilder<Map<String, dynamic>>(
-                              future: fetchLayout(),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return const CircularProgressIndicator();
-                                }
+                            //if (loadingDataObjectives)
+                              // Column(
+                              //   children: [
+                              //     Row(
+                              //       mainAxisAlignment: MainAxisAlignment.center,
+                              //       children: [
+                              //         Text(
+                              //           textAlign: TextAlign.center,
+                              //           'Meta diária',
+                              //           style: TextStyle(
+                              //               fontSize: Style.height_10(context),
+                              //               color: Style.quarantineColor),
+                              //         )
+                              //       ],
+                              //     ),
+                              //     Row(
+                              //       mainAxisAlignment: MainAxisAlignment.center,
+                              //       children: [
+                              //         verifyLoading(
+                              //             flagLoad: loadingDataObjectives,
+                              //             child: Text(
+                              //               textAlign: TextAlign.center,
+                              //               '',
+                              //               style: TextStyle(
+                              //                   fontSize:
+                              //                       Style.height_15(context),
+                              //                   fontWeight: FontWeight.bold,
+                              //                   color: Style.primaryColor),
+                              //             ))
+                              //       ],
+                              //     ),
+                              //     Row(
+                              //       mainAxisAlignment: MainAxisAlignment.center,
+                              //       children: [
+                              //         Text(
+                              //           textAlign: TextAlign.center,
+                              //           'Meta mensal',
+                              //           style: TextStyle(
+                              //               fontSize: Style.height_10(context),
+                              //               color: Style.quarantineColor),
+                              //         )
+                              //       ],
+                              //     ),
+                              //     Row(
+                              //       mainAxisAlignment: MainAxisAlignment.center,
+                              //       children: [
+                              //         verifyLoading(
+                              //             flagLoad: loadingDataObjectives,
+                              //             child: Text(
+                              //               textAlign: TextAlign.center,
+                              //               '',
+                              //               style: TextStyle(
+                              //                   fontSize:
+                              //                       Style.height_15(context),
+                              //                   fontWeight: FontWeight.bold,
+                              //                   color: Style.primaryColor),
+                              //             ))
+                              //       ],
+                              //     ),
+                              //   ],
+                              // )
+                           // else
+                              FutureBuilder<Map<String, dynamic>>(
+                                future: fetchLayout(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return const CircularProgressIndicator();
+                                  }
 
-                                return buildWidgetFromJson(snapshot.data!);
-                              },
-                            )
-
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.center,
-                            //   children: [
-                            //     Column(
-                            //       mainAxisAlignment: MainAxisAlignment.start,
-                            //       crossAxisAlignment: CrossAxisAlignment.center,
-                            //       children: [
-                            //         TextCard(
-                            //           text: 'Meta Diária',
-                            //           fontSize: Style.height_8(context),
-                            //           color: Style.quarantineColor,
-                            //         ),
-                            //       ],
-                            //     ),
-                            //   ],
-                            // ),
-                            // Row(
-                            //     mainAxisAlignment:
-                            //         MainAxisAlignment.spaceBetween,
-                            //     children: [
-                            //       Column(
-                            //         crossAxisAlignment:
-                            //             CrossAxisAlignment.start,
-                            //         children: [
-                            //           TextCard(
-                            //             text: '5.000',
-                            //             fontSize: Style.height_12(context),
-                            //             FontWeight: FontWeight.bold,
-                            //           ),
-                            //         ],
-                            //       ),
-                            //       Column(
-                            //         crossAxisAlignment: CrossAxisAlignment.end,
-                            //         children: [
-                            //           Icon(
-                            //             Icons.check_circle,
-                            //             color: todayValue >= 5000
-                            //                 ? Style.sucefullColor
-                            //                 : Style.tertiaryColor,
-                            //             size: Style.height_12(context),
-                            //           ),
-                            //         ],
-                            //       ),
-                            //     ]),
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.center,
-                            //   children: [
-                            //     Column(
-                            //       mainAxisAlignment: MainAxisAlignment.start,
-                            //       crossAxisAlignment: CrossAxisAlignment.center,
-                            //       children: [
-                            //         TextCard(
-                            //           text: 'Meta Mensal',
-                            //           fontSize: Style.height_8(context),
-                            //           color: Style.quarantineColor,
-                            //         ),
-                            //       ],
-                            //     ),
-                            //   ],
-                            // ),
-                            // Row(
-                            //     mainAxisAlignment:
-                            //         MainAxisAlignment.spaceBetween,
-                            //     children: [
-                            //       Column(
-                            //         crossAxisAlignment:
-                            //             CrossAxisAlignment.start,
-                            //         children: [
-                            //           TextCard(
-                            //             text: '150.000',
-                            //             fontSize: Style.height_12(context),
-                            //             FontWeight: FontWeight.bold,
-                            //           ),
-                            //         ],
-                            //       ),
-                            //       Column(
-                            //         crossAxisAlignment: CrossAxisAlignment.end,
-                            //         children: [
-                            //           Icon(
-                            //             Icons.check_circle,
-                            //             color: monthValue >= 150000
-                            //                 ? Style.sucefullColor
-                            //                 : Style.tertiaryColor,
-                            //             size: Style.height_12(context),
-                            //           ),
-                            //         ],
-                            //       ),
-                            //     ]),
+                                  return buildWidgetFromJson(snapshot.data!);
+                                },
+                              )
                           ],
                           Text: 'Metas de Venda',
                           // icon: Icons.track_changes_outlined,
@@ -649,6 +638,25 @@ class SellerMonitorPageState extends State<SellerMonitorPage> {
     });
   }
 
+  Widget verifyLoading({required Widget child, required bool flagLoad}) {
+    if (flagLoad) {
+      return SizedBox(
+          width: Style.height_70(context),
+          child: Padding(
+            padding: EdgeInsets.only(bottom: Style.height_5(context)),
+            child: CardLoading(
+              cardLoadingTheme: CardLoadingTheme(
+                colorOne: const Color.fromARGB(255, 213, 215, 216),
+                colorTwo: const Color.fromARGB(255, 197, 198, 199),
+              ),
+              height: Style.height_15(context),
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
+            ),
+          ));
+    }
+    return child;
+  }
+
   Future<void> loadData() async {
     await Future.wait([_loadSavedUrlBasic()]);
     await Future.wait([
@@ -658,11 +666,9 @@ class SellerMonitorPageState extends State<SellerMonitorPage> {
       _loadSavedUser(),
       _loadSavedImageUser()
     ]);
-    // await Future.wait([fetchDataSellerMonitor()]);
-    // await Future.wait([fetchSellerData()]);
-    await Future.wait([fetchDataSales(period)]);
-    await Future.wait([fetchDataCustomer()]);
-    await Future.wait([fetchLayout()]);
+    fetchDataSales(period);
+    fetchDataCustomer();
+    fetchLayout();
     setState(() {
       isLoading = false;
     });
@@ -706,8 +712,8 @@ class SellerMonitorPageState extends State<SellerMonitorPage> {
         weekValue = fetchData.totalWeek ?? 0.0;
         monthValue = fetchData.totalMonth ?? 0.0;
         prevMonthValue = fetchData.totalPrevMonth ?? 0.0;
-
         monthValue = fetchData.totalMonth ?? 0.0;
+        loadingDataValues = false;
       });
       monthValueNotifier.value = monthValue;
     } else {
@@ -732,7 +738,7 @@ class SellerMonitorPageState extends State<SellerMonitorPage> {
   static Future<Map<String, dynamic>> fetchLayout() async {
     final response = await http.get(
       Uri.parse(
-        'http://licenciamento.ideiatecnologia.com.br:8997/ideia/public/goals_seller_monitor.json',
+        'http://licenciamento.ideiatecnologia.com.br:8997/ideia/public/ideiaseller/goals_seller_monitor.json',
       ),
       headers: {
         'Accept': 'application/json',
@@ -762,6 +768,7 @@ class SellerMonitorPageState extends State<SellerMonitorPage> {
         defaulters = fetchData.defaulters;
         nonCompliant = fetchData.nonCompliant;
         open = fetchData.open;
+        loadingDataCustomers = false;
       });
     }
   }

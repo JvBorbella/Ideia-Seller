@@ -1204,7 +1204,9 @@ class _SaleMonitorState extends State<SaleMonitor> {
         ticketmedio = fetchData.averageTicket;
         mediadiaria = fetchData.dailyAverage;
         margem = fetchData.margin;
-        flagLoadingData = false;
+        if (flagMonth != 1) {
+          flagLoadingData = false;
+        }
       });
       if (flagMonth == 1) {
         setState(() {
@@ -1226,6 +1228,7 @@ class _SaleMonitorState extends State<SaleMonitor> {
             ticketmedioMesAnt = fetchDataPrevMonth.averageTicket;
             mediadiariaMesAnt = fetchDataPrevMonth.dailyAverage;
             margemMesAnt = fetchDataPrevMonth.margin;
+            flagLoadingData = false;
           });
         }
       }
@@ -1305,7 +1308,7 @@ class _SaleMonitorState extends State<SaleMonitor> {
             colorOne: const Color.fromARGB(255, 3, 99, 163),
             colorTwo: const Color.fromARGB(255, 1, 61, 100),
           ),
-          height: Style.height_20(context),
+          height: Style.height_15(context),
           borderRadius: const BorderRadius.all(Radius.circular(10)),
         ),
       );

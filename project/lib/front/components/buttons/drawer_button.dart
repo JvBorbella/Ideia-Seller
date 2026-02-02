@@ -1,14 +1,12 @@
 import 'package:card_loading/card_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:project/back/company/company_infos.dart';
-import 'package:project/back/seller_monitor/seller_monitor_data.dart';
 import 'package:project/front/components/buttons/modal_button.dart';
 import 'package:project/front/pages/customer_portifolio_page.dart';
 import 'package:project/front/pages/sale_monitor_page.dart';
 import 'package:project/front/pages/seller_monitor_page.dart';
 import 'package:project/front/style/style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({super.key});
@@ -18,19 +16,16 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
-  String token = '';
-  String login = '';
-  String image = '';
-  String url = '';
-  String urlBasic = '';
-  String usuario = '';
+  String token = '',
+      login = '',
+      image = '',
+      url = '',
+      urlBasic = '',
+      usuario = '',
+      empresaid = '',
+      cpf = '';
 
-  String empresaid = '';
-  String cpf = '';
-
-  bool flagNotify = true;
-  bool _isExpandedConfig = false;
-  bool _isExpandedMonit = false;
+  bool flagNotify = true, _isExpandedMonit = false;
 
   late String pessoa_id = '';
   late String codigo = '';
@@ -68,7 +63,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
         color: Colors.transparent,
         child: WillPopScope(
             child: Drawer(
-                // width: MediaQuery.of(context).size.width * 0.8,
+                 width: MediaQuery.of(context).size.width * 0.9,
                 child: Column(
               children: [
                 Container(
@@ -595,6 +590,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
       empresa_id = savedCompanyId;
     });
   }
+
   Future<void> _loadSavedCompanyCode() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String savedCompanyCode =
@@ -603,6 +599,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
       empresa_codigo = savedCompanyCode;
     });
   }
+
   Future<void> _loadSavedCompanyName() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String savedCompanyName =
@@ -633,8 +630,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
   // }
 
   Future<void> loadData() async {
-    await Future.wait(
-        [_loadSavedUrlBasic(), _loadSavedSellerId(), _loadSavedCompanyId(), _loadSavedCompanyCode(), _loadSavedCompanyName()]);
+    await Future.wait([
+      _loadSavedUrlBasic(),
+      _loadSavedSellerId(),
+      _loadSavedCompanyId(),
+      _loadSavedCompanyCode(),
+      _loadSavedCompanyName()
+    ]);
     await Future.wait([_loadSavedUser(), _loadSavedImage(), _loadSavedEmail()]);
     await Future.wait([_loadSavedLogin()]);
     //await Future.wait([fetchDataCompany()]);
