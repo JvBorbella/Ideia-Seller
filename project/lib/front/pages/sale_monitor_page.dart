@@ -1410,7 +1410,7 @@ class _SaleMonitorState extends State<SaleMonitor> {
   static Future<Map<String, dynamic>> fetchLayout() async {
     final response = await http.get(
       Uri.parse(
-        'http://licenciamento.ideiatecnologia.com.br:8997/ideia/public/goals_sale_monitor.json',
+        'http://licenciamento.ideiatecnologia.com.br:8997/ideia/public/ideiaseller/goals_sale_monitor.json',
       ),
       headers: {
         'Accept': 'application/json',
@@ -1418,6 +1418,7 @@ class _SaleMonitorState extends State<SaleMonitor> {
     );
 
     if (response.statusCode != 200) {
+      print('Erro HTTP: ${response.statusCode}');
       throw Exception('Erro HTTP: ${response.statusCode}');
     }
 
